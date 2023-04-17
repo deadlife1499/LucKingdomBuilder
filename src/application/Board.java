@@ -9,6 +9,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+
 public class Board {
 	private BoardGraph graph;
 	private int[] boardNums;
@@ -63,7 +64,7 @@ public class Board {
     		Image boardImg = new Image(getClass().getResourceAsStream("/images/board" + boardNums[i] + ".png"));
     		obj.add(boardImg, x + 591.2 * (i % 2), y + 512.5 * (i / 2), 620, 528);
     	}
-    	//obj.setEffect(new DropShadow(10, Color.BLACK));
+    	obj.setEffect(new DropShadow(10, Color.BLACK));
     	obj.setBounds(x, y, width, height);
     }
     
@@ -118,5 +119,7 @@ public class Board {
     public HexNode getRoot(){
         return root;
     }
-
+	public BoardGraph getGraph(){
+		return graph;
+	}
 }
