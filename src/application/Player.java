@@ -83,5 +83,77 @@ public class Player {
             return true;
         return discovererHelper(root.getBordering(1));
     }
+    private int fisherman(TreeMap<HexNode, Integer> x){
+        int pts = 0;
+        //x.get()
+        for( HexNode node : x.keySet()){
+            for(int i =0; i<6; i++){
+                if(node.getBordering(i).toString().equals("w")){
+                    pts++;
+                }
+            }
+        }
+        return pts;
+    }
+    private int miner(TreeMap<HexNode, Integer> x){
+        int pts = 0;
+        //x.get()
+        for( HexNode node : x.keySet()){
+            for(int i =0; i<6; i++){
+                if(node.getBordering(i).toString().equals("m")){
+                    pts++;
+                }
+            }
+        }
+        return pts;
+    }
+    private int worker(TreeMap<HexNode, Integer> x){
+        int pts = 0;
+        //x.get()
+        for( HexNode node : x.keySet()){
+            for(int i =0; i<6; i++){
+                if(node.getBordering(i).toString().equals("s")){
+                    pts++;
+                }
+            }
+        }
+        return pts;
+    }
+    private int farmer(TreeMap<HexNode, Integer> x){
+        //int pts = 0;
+        int TL = 0;
+        int TR = 0;
+        int BL = 0;
+        int BR = 0;
+        //sector with least
+        for (int j : x.values()){
+            if(j==0)
+                TL++;
+            if(j==1)
+                TR++;
+            if(j==2)
+                BL++;
+            if(j==3)
+                BR++;
+        }
+        int least = Math.min(TL, Math.min(TR, Math.min(BL, BR)));
+        return least*3;
+    }
+    private int knight(HexNode[][] hexMatrix){
+        int highest = -1;
+        for(int i =0; i<20; i++){
+            int z = knightHelper(hexMatrix[i][0]);
+            if (z>highest)
+                highest=z;
+        }
+        return highest*2;
+    }
+    private int knightHelper(HexNode root){
+        if(root==null)
+            return 0;
+        if(root.getNum()==playerNum)
+            return 1 + knightHelper(root.getBordering(1));;
+        return knightHelper(root.getBordering(1));
+    }
 }
 
