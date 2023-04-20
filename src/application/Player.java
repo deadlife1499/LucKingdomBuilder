@@ -155,5 +155,39 @@ public class Player {
             return 1 + knightHelper(root.getBordering(1));;
         return knightHelper(root.getBordering(1));
     }
+    private int lord(TreeMap<HexNode, Integer>[] x){
+        int score = 0;
+        int[][] sr = new int[4][2];
+        int[][] pp = new int[4][4];
+        for(int i =0; i<4; i++){
+            for(int v : x[i].values()){
+                pp[i][v-1]++;
+            }
+        }
+        for(int j = 0; j<4; j++){
+            for(int i =0; i<4; i++){
+                int first = 0;
+                int second = 0;
+                int p1 = -1;
+                int p2 = -1;
+                if(pp[i][j]>first){
+                    first = pp[i][j];
+                    p1 = i;
+                }else if(pp[i][j]>second){
+                    second = pp[i][j];
+                    p2 = i;
+                }
+                sr[j][1]=p1;
+                sr[j][2]=p2;
+            }
+        }
+        for(int j = 0; j<4; j++){
+            if(sr[j][0]==playerNum)
+                score+=12;
+            if(sr[j][1]==playerNum)
+                score+=6;
+        }
+        return score;
+    }
 }
 
