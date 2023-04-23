@@ -1,40 +1,43 @@
 package application;
 
 public class HexNode {
-    private boolean[] checked;
-    private boolean[] checkedF;
     private String terrain;
     private HexNode[] bordering;
-
-    private int num; // 0 1 2 3 | 5 for none
+    private boolean hasSettlement;
     
     // 0 1 2 3 4 5
     // NE E SE SW W NW
-    public HexNode(String t){
+    public HexNode(String terrain){
         bordering = new HexNode[6];
-        terrain = t;
-        checked = new boolean[4];
-        checkedF = new boolean[4];
+        this.terrain = terrain;
+        hasSettlement = false;
     }
     
-    public HexNode[] getBordering(){
-        return bordering;
+    public boolean canPlaceSettlement() {
+    	TurnHandler turnHandler = TurnHandler.get();
+    	Player player = turnHandler.getCurrentPlayer();
+    	
+    	return !hasSettlement && !terrain.equals("s") && player.getSettlementNum() > 0;
     }
     
-    public HexNode getBordering(int x){
-        return bordering[x];
+    public boolean hasSettlement() {return hasSettlement;}
+    
+    public void addSettlement() {
+    	TurnHandler turnHandler = TurnHandler.get();
+    	Player player = turnHandler.getCurrentPlayer();
+    	
+    	player.removeSettlement();
+    	hasSettlement = true;
     }
     
-    public String toString(){
-    	return terrain;
+    public void removeSettlement() {
+    	TurnHandler turnHandler = TurnHandler.get();
+    	Player player = turnHandler.getCurrentPlayer();
+    	
+    	player.addSettlement();
+    	hasSettlement = false;
     }
-    public void setChecked(int n){
-        checked[n] = !checked[n];
-    }
-    public boolean getChecked(int n){
-        return checked[n];
-    }
-    public int getNum(){
-        return num;
-    }
+    
+    public HexNode[] getBordering(){return bordering;}    
+    public String getTerrainType() {return terrain;}
 }

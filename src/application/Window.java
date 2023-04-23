@@ -13,7 +13,7 @@ public class Window extends Application {
 	private static final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	private static final int WIDTH = (int)screen.getWidth();
 	private static final int HEIGHT = (int)screen.getHeight();
-	private Board board;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {		
@@ -30,9 +30,7 @@ public class Window extends Application {
 		}
 		
 		window = new Window();
-		//new TestClass();
-		board = new Board();
-		BoardGraph boardGraph = board.getGraph();
+		new StartScreen();
 	}
 	
 	public static void main(String[] args) {

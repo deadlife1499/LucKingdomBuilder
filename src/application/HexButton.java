@@ -7,10 +7,14 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
 
 public class HexButton extends Polygon {
+	private boolean hasSettlement;
+	private HexNode hexNode;
     private double radianStep = (2 * Math.PI) / 6;
 
-    public HexButton(double radius) {
+    public HexButton(double radius, HexNode hexNode) {
     	//setOnMouseClicked(e -> {});
+    	hasSettlement = false;
+    	this.hexNode = hexNode;
         buildHexagon(radius);
         
         ObjectHandler objectHandler = ObjectHandler.get();
@@ -21,7 +25,7 @@ public class HexButton extends Polygon {
         setFill(Color.BLACK);
         setStroke(Color.WHITESMOKE);
         //setEffect(new DropShadow(10, Color.BLACK));
-        setStrokeWidth(10);
+        setStrokeWidth(5);
         //setStrokeType(StrokeType.INSIDE);
 
         for (int i = 0; i < 6; i++) {
@@ -33,21 +37,16 @@ public class HexButton extends Polygon {
         getTransforms().add(new Rotate(90, 0, 0));
     }
     
-    public void setBounds(int x, int y, int radius) {
+    public void setBounds(double x, double y) {
     	Window window = Window.get();
 		double xMultiplier = window.getWidth() / 1920;
 		double yMultiplier = window.getHeight() / 1080;
 		
-    	setLayoutX((int)(x * xMultiplier));
-		setLayoutY((int)(y * yMultiplier));
-		
-		for (int i = 0; i < 6; i++) {
-            double angle = radianStep * i;
-
-            getPoints().add(Math.cos(angle) * radius / 1.1);
-            getPoints().add(Math.sin(angle) * radius / 1.1);
-        }
+    	setLayoutX(x * xMultiplier);
+		setLayoutY(y * yMultiplier);
     }
+    
+    public HexNode getHexNode() {return hexNode;}
 }
 
 

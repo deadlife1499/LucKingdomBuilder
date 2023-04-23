@@ -3,8 +3,6 @@ package application;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,13 +30,8 @@ public class ObjectHandler {
 		Window window = Window.get();
 	    Group root = window.getRoot();
 		
-		if(gameObjects.lastKey() == sortingLayer) {
-			root.getChildren().add(imgView);
-		    
-		    return;
-		}
 		ObservableList<Node> list = root.getChildren();
-		list.removeAll();
+		list.removeAll(list);
 		
 		Set<Entry<Integer, ArrayList<GameObject>>> entrySet = gameObjects.entrySet();
         Iterator<Entry<Integer, ArrayList<GameObject>>> iter = entrySet.iterator();
@@ -46,9 +39,11 @@ public class ObjectHandler {
         while(iter.hasNext()) {
             Entry<Integer, ArrayList<GameObject>> entry = iter.next();
             for(GameObject img : entry.getValue()) {
+            	//System.out.println("Root Children: " + root.getChildren() + " Next Added GameObject: " + img);
             	root.getChildren().add(img);
             }
         }
+        //System.out.println();
         
         Iterator<GameButton> iter2 = buttonList.iterator();
         while(iter2.hasNext()) {
@@ -81,6 +76,79 @@ public class ObjectHandler {
 	    Group root = window.getRoot();
 	    
 	    root.getChildren().add(button);
+	}
+	
+	public void clear() {
+		Window window = Window.get();
+		Group root = window.getRoot();
+		ObservableList<Node> rootList = root.getChildren();
+		rootList.clear();
+		
+		gameObjects.clear();
+		buttonList.clear();
+		hexList.clear();
+	}
+	
+	public void remove(Node node) {
+		switch(node.getClass().toString()) {
+		case "class application.GameObject":
+			GameObject obj = (GameObject)node;
+			remove(obj);
+			
+		    break;
+		case "class application.GameButton":
+			GameButton button = (GameButton)node;
+			remove(button);
+			
+			break;
+		case "class application.HexButton":
+			HexButton hexButton = (HexButton)node;
+			remove(hexButton);
+			
+			break;
+		}
+	}
+	
+	private void remove(GameObject obj) {
+		Set<Entry<Integer, ArrayList<GameObject>>> entrySet = gameObjects.entrySet();
+        Iterator<Entry<Integer, ArrayList<GameObject>>> iter = entrySet.iterator();
+        
+        while(iter.hasNext()) {
+            Entry<Integer, ArrayList<GameObject>> entry = iter.next();
+            ArrayList<GameObject> objArr = entry.getValue();
+            
+            if(objArr.contains(obj)) {
+            	objArr.remove(obj);
+            }
+        }
+        Window window = Window.get();
+	    Group root = window.getRoot();
+	    
+	    root.getChildren().remove(obj);
+	}
+	
+	private void remove(GameButton button) {
+		if(buttonList.contains(button)) {
+			buttonList.remove(button);
+		}
+        Window window = Window.get();
+	    Group root = window.getRoot();
+	    
+	    root.getChildren().remove(button);
+	}
+	
+	private void remove(HexButton button) {
+		if(hexList.contains(button)) {
+			hexList.remove(button);
+		}
+        Window window = Window.get();
+	    Group root = window.getRoot();
+	    
+	    root.getChildren().remove(button);
+	}
+	
+	public TreeMap<Integer, ArrayList<GameObject>> getObjects() {
+		return gameObjects;
 	}
 	
 	public ObjectHandler() {

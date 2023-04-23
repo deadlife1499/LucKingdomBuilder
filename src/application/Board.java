@@ -5,41 +5,35 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.Stack;
 
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-
 public class Board {
-	private BoardGraph graph;
+	private BoardGraph boardGraph;
 	private int[] boardNums;
     private HexNode root;
+    private HexButton[][] buttonMatrix;
+    private GameObject settlementObj;
+    private int settlementsPlacedSinceReset;
+    private ArrayList<HexNode> settlementQueue;
     
     public Board(){
     	boardNums = new int[4];
+    	buttonMatrix = new HexButton[20][20];
+    	settlementsPlacedSinceReset = 0;
+    	settlementQueue = new ArrayList<>();
         setBoardNums();
         displayBoard(354, 14, 1212, 1041);
         
     	HashMap<Integer, String[][]> terrainMaps = buildMap();
         String[][] terrainMatrix = buildMatrix(terrainMaps);
         
-        graph = new BoardGraph(terrainMatrix);
+        boardGraph = new BoardGraph(terrainMatrix);
         
-        /*
-        System.out.println(graph);
-        
-        System.out.println();
-        String str = "";
-        for(int i = 0; i < boardNums.length; i++) {
-        	str += boardNums[i] + ", ";
-        }
-        System.out.println(str.substring(0, str.length() - 2));
-        */
-        
-        HexButton hexButton = new HexButton(100);
-        hexButton.setBounds(100, 100, 100);
+        addHexButtons();
     }
     
     private void setBoardNums() {
@@ -118,10 +112,71 @@ public class Board {
     	return tempMatrix;
     }
     
+    private void addHexButtons() {
+    	HexNode[][] hexMatrix = boardGraph.getMatrix();
+    	
+    	for(int r = 0; r < 20; r++) {
+    		for(int c = 0; c < 20; c++) {
+    			createHexButton(hexMatrix, r, c);
+    		}
+    	}
+    }
+    
+    private HexButton createHexButton(HexNode[][] hexMatrix, int r, int c) {
+    	HexButton button = new HexButton(33, hexMatrix[r][c]);
+		
+		button.setBounds(384 + 59 * c + c / 10 * 1.5 + r % 2 * 29.5, 48 + r * 51.25);
+		buttonMatrix[r][c] = button;
+		button.setOpacity(0);
+		
+		button.setOnMouseClicked(e -> {
+			HexNode hexNode = button.getHexNode();
+			
+			if(settlementObj == null) {
+				settlementObj = new GameObject();
+				//settlementObj.setSortingLayer(2);
+				settlementObj.setEffect(new DropShadow(10, Color.BLACK));
+			}
+			
+			if(hexNode.canPlaceSettlement() && settlementsPlacedSinceReset < 3) {
+				TurnHandler turnHandler = TurnHandler.get();
+				Player player = turnHandler.getCurrentPlayer();
+				Image settlement = player.getSettlementImg();
+				
+				settlementObj.add(settlement, button.getLayoutX() - 35, button.getLayoutY() - 20, 73.6, 46);
+				hexNode.addSettlement();
+				settlementsPlacedSinceReset++;
+				settlementQueue.add(hexNode);
+			} else if(hexNode.hasSettlement()) {    					
+				settlementObj.removeImgAt(button.getLayoutX() - 35, button.getLayoutY() - 20, 73.6, 46);
+				hexNode.removeSettlement();
+				settlementsPlacedSinceReset--;
+				settlementQueue.remove(hexNode);
+			}
+		});
+		
+		return button;
+    }
+    
+    public int getSettlementsPlacedSinceReset() {
+    	return settlementsPlacedSinceReset;
+    }
+    
+    public void resetSettlementsPlaced() {
+    	settlementsPlacedSinceReset = 0;
+    }
+    
     public HexNode getRoot(){
         return root;
     }
-	public BoardGraph getGraph(){
-		return graph;
-	}
 }
+
+
+
+
+
+
+
+
+
+

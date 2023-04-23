@@ -1,20 +1,30 @@
 package application;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 
 public class GameObject extends ImageView {
 	//new Image(getClass().getResourceAsStream("/images/filename"));
+	private static final Image nullImage = new Image(GameObject.class.getResourceAsStream("/images/NullImage.png"));
 	private int sortingLayer;
+	private ArrayList<ImageView> imageList;
 	private ObjectHandler objectHandler;
 	
 	public GameObject() {
-		super();
-		sortingLayer = 0;
+		super(nullImage);
+		sortingLayer = 2;
+		imageList = new ArrayList<>();
 		
 		objectHandler = ObjectHandler.get();
 		objectHandler.add(this);
@@ -24,19 +34,42 @@ public class GameObject extends ImageView {
 		super(image);
 		setBounds(x, y, width, height);
 		this.sortingLayer = sortingLayer;
+		imageList = new ArrayList<>();
+		
+		ImageView imgView = new ImageView(image);
+		imgView.setX(x);
+		imgView.setY(y);
+		imgView.setFitWidth(width);
+		imgView.setFitHeight(height);
+		imageList.add(imgView);
 		
 		objectHandler = ObjectHandler.get();
 		objectHandler.add(this);
 	}
 	
-	public void add(Image image1, double x1, double y1, double width1, double height1) {
-		Image image2 = getImage();
-		if(image2 == null) {
-			setImage(image1);
-			setBounds(x1, y1, width1, height1);
-			return;
-		}
+	public void setImg(Image image, double x, double y, double width, double height) {
+		setImage(image);
+		setBounds(x, y, width, height);
 		
+		ImageView imgView = new ImageView(image);
+		imgView.setX(x);
+		imgView.setY(y);
+		imgView.setFitWidth(width);
+		imgView.setFitHeight(height);
+		
+		imageList = new ArrayList<>();
+		imageList.add(imgView);
+	}
+	
+	public void add(Image image1, double x1, double y1, double width1, double height1) {
+		ImageView imgView = new ImageView(image1);
+		imgView.setX(x1);
+		imgView.setY(y1);
+		imgView.setFitWidth(width1);
+		imgView.setFitHeight(height1);
+		imageList.add(imgView);
+		
+		Image image2 = getImage();
 		double x2 = getX();
 		double y2 = getY();
 		double width2 = getFitWidth();
@@ -47,7 +80,6 @@ public class GameObject extends ImageView {
 		
 		int width = (int)(Math.max(x1 + width1, x2 + width2) - Math.min(x1, x2));
 		int height = (int)(Math.max(y1 + height1, y2 + height2) - Math.min(y1, y2));
-		System.out.println("Width: " + width + " Height: " + height);
 		
 		BufferedImage combinedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = combinedImage.createGraphics();
@@ -64,7 +96,66 @@ public class GameObject extends ImageView {
 		setBounds(Math.min(x1, x2), Math.min(y1, y2), width, height);
 	}
 	
+	public void removeImgAt(double x, double y, double width, double height) {
+		for(int i = 0; i < imageList.size(); i++) {
+			ImageView imgView = imageList.get(i);
+			
+			if(x == imgView.getX() && 
+					y == imgView.getY() && 
+					width == imgView.getFitWidth() && 
+					height == imgView.getFitHeight()) {
+				imageList.remove(i);
+				i = imageList.size();
+			}
+		}
+		@SuppressWarnings("unchecked")
+		ArrayList<ImageView> imgList = (ArrayList<ImageView>)imageList.clone();
+		if(imgList.size() == 0) {
+			imgList.add(new ImageView(nullImage));
+		}
+		
+		ImageView imgView = imgList.remove(0);
+		setImg(imgView.getImage(), imgView.getX(), imgView.getY(), imgView.getFitWidth(), imgView.getFitHeight());
+		
+		for(ImageView img : imgList) {
+			add(img.getImage(), img.getX(), img.getY(), img.getFitWidth(), img.getFitHeight());
+		}
+	}
+	
 	public int getSortingLayer() {return sortingLayer;}
+	
+	public void setSortingLayer(int sortingLayer) {
+		ObjectHandler objectHandler = ObjectHandler.get();
+		TreeMap<Integer, ArrayList<GameObject>> gameObjects = objectHandler.getObjects();
+		
+		ArrayList<GameObject> objList1 = gameObjects.get(this.sortingLayer);
+		objList1.remove(this);
+		
+		ArrayList<GameObject> objList2 = gameObjects.get(sortingLayer);
+		if(objList2 == null) {
+			objList2 = new ArrayList<>();
+		}
+		objList2.add(this);
+		
+		Window window = Window.get();
+		Group root = window.getRoot();
+		
+		ObservableList<Node> list = root.getChildren();
+		list.removeAll(list);
+		
+		Set<Entry<Integer, ArrayList<GameObject>>> entrySet = gameObjects.entrySet();
+        Iterator<Entry<Integer, ArrayList<GameObject>>> iter = entrySet.iterator();
+        
+        while(iter.hasNext()) {
+            Entry<Integer, ArrayList<GameObject>> entry = iter.next();
+            for(GameObject img : entry.getValue()) {
+            	root.getChildren().add(img);
+            }
+        }
+		
+		this.sortingLayer = sortingLayer;
+		System.out.println("Not working dumby");
+	}
 	
 	public void setBounds(double x, double y, double width, double height) {
 		setX(x);
@@ -74,7 +165,7 @@ public class GameObject extends ImageView {
 	}
 	
 	public String toString() {
-		return getImage() + "\n" + getX() + "\n" + getY() + "\n" + getFitWidth() + "\n" + getFitHeight() + "\n" +  getSortingLayer();
+		return getImage() + " " + getX() + " " + getY() + " " + getFitWidth() + " " + getFitHeight() + " " +  getSortingLayer();
 	}
 }
 
