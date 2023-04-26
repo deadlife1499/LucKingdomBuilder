@@ -88,8 +88,13 @@ public class Board {
         }
     	return tempMap;
     }
-    
-    private String[][] buildMatrix(HashMap<Integer, String[][]> terrainMaps) {
+
+	/**
+	 * Sowa qhRAFdsaf
+	 * @param terrainMaps mPA RWRajN
+	 * @return THING
+	 */
+	private String[][] buildMatrix(HashMap<Integer, String[][]> terrainMaps) {
     	String[][] tempMatrix = new String[20][20];
     	
     	for(int r = 0; r < tempMatrix.length; r++) {
@@ -120,6 +125,7 @@ public class Board {
     			createHexButton(hexMatrix, r, c);
     		}
     	}
+		System.out.println(hexMatrix[0][0].toString());
     }
     
     private HexButton createHexButton(HexNode[][] hexMatrix, int r, int c) {
@@ -138,7 +144,7 @@ public class Board {
 				settlementObj.setEffect(new DropShadow(10, Color.BLACK));
 			}
 			
-			if(hexNode.canPlaceSettlement() && settlementsPlacedSinceReset < 3) {
+			if(hexNode.canPlaceSettlement() && settlementsPlacedSinceReset < 3 && !hexNode.getTerrain().equals("m") && !hexNode.getTerrain().equals("w")) {
 				TurnHandler turnHandler = TurnHandler.get();
 				Player player = turnHandler.getCurrentPlayer();
 				Image settlement = player.getSettlementImg();
@@ -147,11 +153,14 @@ public class Board {
 				hexNode.addSettlement();
 				settlementsPlacedSinceReset++;
 				settlementQueue.add(hexNode);
+				hexNode.setPlayer(player.getPlayerNum());
+				//System.out.println(hexMatrix[0][0].toPlayerString());
 			} else if(hexNode.hasSettlement()) {    					
 				settlementObj.removeImgAt(button.getLayoutX() - 35, button.getLayoutY() - 20, 73.6, 46);
 				hexNode.removeSettlement();
 				settlementsPlacedSinceReset--;
 				settlementQueue.remove(hexNode);
+				hexNode.removePlayer();
 			}
 		});
 		

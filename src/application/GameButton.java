@@ -24,8 +24,8 @@ public class GameButton extends Button {
 	
 	public void setBounds(double x, double y, double width, double height) {
 		Window window = Window.get();
-		double xMultiplier = window.getWidth() / 1920;
-		double yMultiplier = window.getHeight() / 1080;
+		double xMultiplier = window.getWidth() / 1920.0;
+		double yMultiplier = window.getHeight() / 1080.0;
 				
 		setLayoutX(x * xMultiplier);
 		setLayoutY(y * yMultiplier);
