@@ -1,15 +1,14 @@
 package application;
 
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Stack;
-
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 public class Board {
 	private BoardGraph boardGraph;
@@ -19,12 +18,15 @@ public class Board {
     private GameObject settlementObj;
     private int settlementsPlacedSinceReset;
     private ArrayList<HexNode> settlementQueue;
+
+	private ArrayList<HexNode> current;
     
     public Board(){
     	boardNums = new int[4];
     	buttonMatrix = new HexButton[20][20];
     	settlementsPlacedSinceReset = 0;
     	settlementQueue = new ArrayList<>();
+		current = new ArrayList<>();
         setBoardNums();
         displayBoard(354, 14, 1212, 1041);
         
@@ -125,7 +127,7 @@ public class Board {
     			createHexButton(hexMatrix, r, c);
     		}
     	}
-		System.out.println(hexMatrix[0][0].toString());
+		//System.out.println(hexMatrix[0][0].toString());
     }
     
     private HexButton createHexButton(HexNode[][] hexMatrix, int r, int c) {
@@ -153,14 +155,14 @@ public class Board {
 				hexNode.addSettlement();
 				settlementsPlacedSinceReset++;
 				settlementQueue.add(hexNode);
-				hexNode.setPlayer(player.getPlayerNum());
-				//System.out.println(hexMatrix[0][0].toPlayerString());
-			} else if(hexNode.hasSettlement()) {    					
+				current.add(hexNode);
+				System.out.println(hexMatrix[0][0].toPlayerString());
+			} else if(hexNode.hasSettlement() && !hexNode.isConfirmed()) {
 				settlementObj.removeImgAt(button.getLayoutX() - 35, button.getLayoutY() - 20, 73.6, 46);
 				hexNode.removeSettlement();
 				settlementsPlacedSinceReset--;
 				settlementQueue.remove(hexNode);
-				hexNode.removePlayer();
+				current.remove(hexNode);
 			}
 		});
 		
@@ -178,6 +180,13 @@ public class Board {
     public HexNode getRoot(){
         return root;
     }
+
+	public void confirmPlacements(){
+		for(int i =0;i<current.size(); i++){
+			current.get(i).setConfirmed();
+		}
+		current = new ArrayList<>();
+	}
 }
 
 

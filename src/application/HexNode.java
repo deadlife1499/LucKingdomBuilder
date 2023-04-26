@@ -8,6 +8,7 @@ public class HexNode {
     private boolean[] checkedF;
 
     private int player;
+    private boolean confirmed;
     
     // 0 1 2 3 4 5
     // NE E SE SW W NW
@@ -16,6 +17,7 @@ public class HexNode {
         this.terrain = terrain;
         hasSettlement = false;
         player = 5;
+        confirmed=false;
     }
     
     public boolean canPlaceSettlement() {
@@ -33,6 +35,7 @@ public class HexNode {
     	
     	player.removeSettlement();
     	hasSettlement = true;
+        this.player=player.getPlayerNum();
     }
     public void setChecked(int n){
         checked[n] = !checked[n];
@@ -47,6 +50,7 @@ public class HexNode {
     	
     	player.addSettlement();
     	hasSettlement = false;
+        this.player=5;
     }
     public int getNum(){
         return player;
@@ -57,12 +61,6 @@ public class HexNode {
     
     public HexNode[] getBordering(){return bordering;}    
     public String getTerrainType() {return terrain;}
-    public void removePlayer(){
-        player = 5;
-    }
-    public void setPlayer(int n){
-        player = n;
-    }
     public String toString(){
         if(bordering[4]==null){
             if(bordering[3]==null){
@@ -76,14 +74,15 @@ public class HexNode {
     }
     private String toString(HexNode x){
         if(x==null) return "";
-        if(x.getBordering()[4]!=null)
-            return x.getTerrain() + " " + toString(x.getBordering()[1]);
-        if(x.getBordering()[3]==null){
-            return terrain + " " + toString(x.getBordering()[1]) + "\n" + toString(x.getBordering()[2]);
+        if(x.getBordering(4)==null){
+            if(x.getBordering()[3]==null){
+                return x.getTerrain() + " " + toString(x.getBordering(1)) + "\n" + toString(x.getBordering(2));
+            }
+            else{
+                return x.getTerrain() + " " + toString(x.getBordering(1)) + "\n" + toString(x.getBordering(3));
+            }
         }
-        else{
-            return terrain + " " + toString(x.getBordering()[1]) + "\n" + toString(x.getBordering()[3]);
-        }
+        return x.getTerrain() + " " + toString((x.getBordering(1)));
     }
     public String toPlayerString(){
         if(bordering[4]==null){
@@ -101,13 +100,25 @@ public class HexNode {
         if(x.getBordering()[4]!=null)
             return x.getNum() + " " + toPlayerString(x.getBordering()[1]);
         if(x.getBordering()[3]==null){
-            return player + " " + toPlayerString(x.getBordering()[1]) + "\n" + toPlayerString(x.getBordering()[2]);
+            return x.getNum() + " " + toPlayerString(x.getBordering()[1]) + "\n" + toPlayerString(x.getBordering()[2]);
         }
         else{
-            return player + " " + toPlayerString(x.getBordering()[1]) + "\n" + toPlayerString(x.getBordering()[3]);
+            return x.getNum() + " " + toPlayerString(x.getBordering()[1]) + "\n" + toPlayerString(x.getBordering()[3]);
         }
     }
     public String getTerrain(){
         return  terrain;
+    }
+    public boolean equals(HexNode z){
+        if(bordering==z.getBordering()){
+            return terrain.equals(z.getTerrain());
+        }
+        return false;
+    }
+    public void setConfirmed(){
+        confirmed=!confirmed;
+    }
+    public boolean isConfirmed(){
+        return confirmed;
     }
 }

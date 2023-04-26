@@ -11,6 +11,7 @@ public class GUI {
 			
 				turnHandler.nextTurn();
 				board.resetSettlementsPlaced();
+				board.confirmPlacements();
 			}
 		});
 		
