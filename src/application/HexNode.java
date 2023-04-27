@@ -1,5 +1,7 @@
 package application;
 
+import java.util.ArrayList;
+
 public class HexNode {
     private final String terrain;
     private HexNode[] bordering;
@@ -7,8 +9,9 @@ public class HexNode {
     private boolean[] checked;
     private boolean[] checkedF;
 
-    private int player;
+    private int playerNum;
     private boolean confirmed;
+    private HexButton hexButton;
     
     // 0 1 2 3 4 5
     // NE E SE SW W NW
@@ -16,7 +19,7 @@ public class HexNode {
         bordering = new HexNode[6];
         this.terrain = terrain;
         hasSettlement = false;
-        player = 5;
+        playerNum = -1;
         confirmed=false;
     }
     
@@ -35,7 +38,7 @@ public class HexNode {
     	
     	player.removeSettlement();
     	hasSettlement = true;
-        this.player=player.getPlayerNum();
+        playerNum=player.getPlayerNum();
     }
     public void setChecked(int n){
         checked[n] = !checked[n];
@@ -50,10 +53,10 @@ public class HexNode {
     	
     	player.addSettlement();
     	hasSettlement = false;
-        this.player=5;
+        playerNum=-1;
     }
     public int getNum(){
-        return player;
+        return playerNum;
     }
     public HexNode getBordering(int x){
         return bordering[x];
@@ -87,13 +90,13 @@ public class HexNode {
     public String toPlayerString(){
         if(bordering[4]==null){
             if(bordering[3]==null){
-                return player + " " + toPlayerString(bordering[1]) + "\n" + toPlayerString(bordering[2]);
+                return playerNum + " " + toPlayerString(bordering[1]) + "\n" + toPlayerString(bordering[2]);
             }
             else{
-                return player + " " + toPlayerString(bordering[1]) + "\n" + toPlayerString(bordering[3]);
+                return playerNum + " " + toPlayerString(bordering[1]) + "\n" + toPlayerString(bordering[3]);
             }
         }
-        return player + " " + toPlayerString(bordering[1]);
+        return playerNum + " " + toPlayerString(bordering[1]);
     }
     private String toPlayerString(HexNode x){
         if(x==null) return "";
@@ -120,5 +123,14 @@ public class HexNode {
     }
     public boolean isConfirmed(){
         return confirmed;
+    }
+    public HexButton getHexButton() {return hexButton;}
+    //public int getPlayerNum() {return playerNum;}
+
+    public void setHexButton(HexButton button) {
+        hexButton = button;
+    }
+    public int getPlayerNum(){
+        return playerNum;
     }
 }

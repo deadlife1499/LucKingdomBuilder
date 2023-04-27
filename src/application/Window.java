@@ -2,7 +2,10 @@ package application;
 	
 import java.awt.Dimension;
 import java.awt.Toolkit;
+
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -49,6 +52,7 @@ public class Window extends Application {
 	public static Window get() {
 		return Window.window;
 	}
+
 }
 
 
