@@ -121,6 +121,14 @@ public class ObjectHandler {
 
 		root.getChildren().add(button);
 	}
+	private void add(ActionTile tile) {
+		hexList.add(tile);
+
+		Window window = Window.get();
+		Group root = window.getRoot();
+
+		root.getChildren().add(tile);
+	}
 
 	public void clear() {
 		Window window = Window.get();

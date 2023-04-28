@@ -1,5 +1,42 @@
 package application;
 
-public class ActionTile {
-	
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
+
+public class ActionTile extends HexButton{
+    private HexNode hexNode;
+    String type;
+    HexButton button;
+    private double radianStep = (2 * Math.PI) / 6;
+
+
+    public ActionTile(double radius, String type) {
+        super(radius, new HexNode(type));
+        this.type=type;
+    }
+
+    private void buildTile(double radius) {
+        setFill(Color.BLACK);
+        //setStroke(Color.WHITESMOKE);
+        //setEffect(new DropShadow(10, Color.BLACK));
+        setStrokeWidth(5);
+        //setStrokeType(StrokeType.INSIDE);
+
+        for (int i = 0; i < 6; i++) {
+            double angle = radianStep * i;
+
+            getPoints().add(Math.cos(angle) * radius / 1.1);
+            getPoints().add(Math.sin(angle) * radius / 1.1);
+        }
+        getTransforms().add(new Rotate(90, 0, 0));
+    }
+
+    public void setBounds(double x, double y) {
+        Window window = Window.get();
+        double xMultiplier = window.getWidth() / 1920;
+        double yMultiplier = window.getHeight() / 1080;
+
+        setLayoutX(x * xMultiplier);
+        setLayoutY(y * yMultiplier);
+    }
 }

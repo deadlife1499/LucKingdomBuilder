@@ -2,11 +2,10 @@ package application;
 
 import javafx.scene.image.Image;
 
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
+
 import javafx.scene.Node;
-import java.util.TreeSet;
-import java.util.HashMap;
+
 import java.util.TreeSet;
 
 import javafx.collections.ObservableList;
@@ -20,10 +19,9 @@ public class Player {
     private final int playerNum;
     private int settlements;
     private final TreeSet<LocationTile> locTiles;
-
     private Image settlementImg;
-
     private final String color;
+    private ArrayList<ActionTile> actionTiles;
 
     public Player(int num, String color) {
         points = 0;
@@ -31,6 +29,7 @@ public class Player {
         this.color = color;
         settlements = 40;
         locTiles = new TreeSet<>();
+        actionTiles = new ArrayList<>();
         try {
             settlementImg = new Image(getClass().getResourceAsStream("/images/" + color.toLowerCase() + "Settlement.png"));
         } catch(NullPointerException e) {
@@ -250,6 +249,26 @@ public class Player {
             }
         });
         moveSelectionList.add(addSettlements);
+    }
+    public void createActionTiles(){
+        double xOffset = 200.0;
+        double yOffset = 200.0;
+        int width = 1920;
+        int height = 1080;
+
+        //HexNode[][] matrix = boardGraph.getMatrix();
+        //matrix[r][c].setHexButton(button);
+
+        double hexWidth = (width - 31 * (width / 1152)) / 19;
+        double hexHeight = height / 19;
+        for(int i =0; i<actionTiles.size(); i++){
+            ActionTile tile = actionTiles.get(i);
+            tile.setBounds(xOffset + hexWidth * i + i / 10 * (1.5 * (width / 1152)) + 0 % 2 * (29.5 * (width / 1152)), yOffset + 100 * hexHeight);
+        }
+        //buttonMatrix[r][c] = button;
+    }
+    public void addActionTiles(String type){
+        actionTiles.add(new ActionTile(33, type));
     }
 }
 
