@@ -12,6 +12,8 @@ public class HexNode {
     private int playerNum;
     private boolean confirmed;
     private HexButton hexButton;
+    private boolean[] isTaken;
+    private int tokens;
     
     // 0 1 2 3 4 5
     // NE E SE SW W NW
@@ -19,8 +21,12 @@ public class HexNode {
         bordering = new HexNode[6];
         this.terrain = terrain;
         hasSettlement = false;
-        playerNum = -1;
+        playerNum = 5;
         confirmed=false;
+        isTaken = new boolean[4];
+        tokens = 2;
+        checked = new boolean[4];
+        checkedF = new boolean[4];
     }
     
     public boolean canPlaceSettlement() {
@@ -41,7 +47,7 @@ public class HexNode {
         playerNum=player.getPlayerNum();
     }
     public void setChecked(int n){
-        checked[n] = !checked[n];
+        checked[n] = true;
     }
     public boolean getChecked(int n){
         return checked[n];
@@ -53,7 +59,7 @@ public class HexNode {
     	
     	player.addSettlement();
     	hasSettlement = false;
-        playerNum=-1;
+        playerNum=5;
     }
     public int getNum(){
         return playerNum;
@@ -132,5 +138,12 @@ public class HexNode {
     }
     public int getPlayerNum(){
         return playerNum;
+    }
+    public boolean isTaken(int x){
+        return isTaken[x];
+    }
+    public void setIsTaken(int x){
+        isTaken[x]=true;
+        tokens--;
     }
 }

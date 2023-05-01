@@ -41,6 +41,7 @@ public class TurnHandler {
 	}
 
 	public void nextTurn(Board board) {
+		getCurrentPlayer().score(board.getHexMatrix());
 		playerIter.next();
 
 		if(!playerIter.hasNext()) {

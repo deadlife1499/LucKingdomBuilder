@@ -20,11 +20,13 @@ public class HexButton extends Polygon {
     }
 
     private void buildHexagon(double radius) {
-        setFill(Color.BLACK);
-        //setStroke(Color.WHITESMOKE);
-        //setEffect(new DropShadow(10, Color.BLACK));
+        setStrokeType(StrokeType.OUTSIDE);
+        //setFill(Color.BLACK);
+        setStroke(Color.BLACK);
         setStrokeWidth(5);
-        //setStrokeType(StrokeType.INSIDE);
+        setFill(Color.TRANSPARENT);
+        //setEffect(new DropShadow(10, Color.BLACK));
+        setOpacity(100);
 
         for (int i = 0; i < 6; i++) {
             double angle = radianStep * i;

@@ -43,6 +43,11 @@ public class ObjectHandler {
 				add(hexButton);
 
 				break;
+			case "class application.ActionTile":
+				ActionTile actionTile = (ActionTile) node;
+				add(actionTile);
+
+				break;
 			default:
 				miscList.add(node);
 
@@ -120,14 +125,6 @@ public class ObjectHandler {
 		Group root = window.getRoot();
 
 		root.getChildren().add(button);
-	}
-	private void add(ActionTile tile) {
-		hexList.add(tile);
-
-		Window window = Window.get();
-		Group root = window.getRoot();
-
-		root.getChildren().add(tile);
 	}
 
 	public void clear() {

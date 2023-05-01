@@ -79,7 +79,7 @@ public class BoardGraph {
             if(temp.getBordering(i)!=null)
                 System.out.println(i + " " + temp.getBordering(i).getTerrain());
         }*/
-        System.out.println(root.toString());
+        //System.out.println(root.toString());
         if(root.getBordering(2).getBordering(3).equals(root)){
             System.out.println("OOPS");
         }
@@ -98,6 +98,9 @@ public class BoardGraph {
     		str += "\n";
     	}
     	return str;
+    }
+    public HexNode[][] getHexMatrix(){
+        return hexMatrix;
     }
 }
 

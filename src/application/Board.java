@@ -2,13 +2,12 @@ package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
+
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import java.util.TreeMap;
 
 public class Board {
 	private static Board board;
@@ -24,6 +23,8 @@ public class Board {
 	private GameObject terrainCardObj;
 	private TerrainCard activeCard;
 	private ArrayList<HexNode> current;
+	private ArrayList<TreeMap<Integer, ArrayList<HexNode>>> playerMaps;
+	private int settlementLimit;
 
 	public Board(){
 		boardNums = new int[4];
@@ -46,6 +47,15 @@ public class Board {
 		createTerrainCards();
 		drawTerrainCard();
 		current = new ArrayList<>();
+		root = getHexMatrix()[0][0];
+		playerMaps = new ArrayList<>();
+		for(int i =0; i<4; i++){
+			playerMaps.add(new TreeMap<>());
+			for(int j = 0; j<4; j++){
+				playerMaps.get(i).put(j, new ArrayList<HexNode>());
+			}
+		}
+		settlementLimit=3;
 	}
 
 	private void setBoardNums() {
@@ -74,6 +84,12 @@ public class Board {
 		}
 		obj.setEffect(new DropShadow(10, Color.BLACK));
 		obj.setBounds(x, y, width, height);
+		TurnHandler turnHandler = TurnHandler.get();
+		Player current = turnHandler.getCurrentPlayer();
+		current.addActionTiles("oracle");
+		current.addActionTiles("farm");
+		current.addActionTiles("oasis");
+		current.createActionTiles();
 	}
 
 	private HashMap<Integer, String[][]> buildMap() {
@@ -157,6 +173,15 @@ public class Board {
 		//button.setOpacity(0);
 
 		button.setOnMouseClicked(e -> {
+			int quadrant = -1;
+			if(r<10 && c<10)
+				quadrant = 0;
+			if(r<10 && c<20 && c>=10)
+				quadrant = 1;
+			if(r>=10 && c<10 && r<20)
+				quadrant = 2;
+			if(r>=10 && c>=10)
+				quadrant = 3;
 			HexNode hexNode = button.getHexNode();
 
 			if(settlementObj == null) {
@@ -165,7 +190,8 @@ public class Board {
 				settlementObj.setEffect(new DropShadow(10, Color.BLACK));
 			}
 
-			if(!hexNode.hasSettlement() && settlementsPlacedSinceReset < 3 && !hexNode.getTerrain().equals("m") && !hexNode.getTerrain().equals("w")) {
+			if(!hexNode.hasSettlement() && settlementsPlacedSinceReset < settlementLimit && !hexNode.getTerrain().equals("m") && !hexNode.getTerrain().equals("w")) {
+				System.out.println("limit " + settlementLimit);
 				TurnHandler turnHandler = TurnHandler.get();
 				Player player = turnHandler.getCurrentPlayer();
 				Image settlement = player.getSettlementImg();
@@ -173,6 +199,8 @@ public class Board {
 				settlementObj.add(settlement, button.getLayoutX() - 35, button.getLayoutY() - 20, 73.6, 46);
 				hexNode.addSettlement();
 				settlementsPlacedSinceReset++;
+				if(settlementsPlacedSinceReset==settlementLimit)
+					System.out.println(root.toPlayerString());
 				settlementQueue.add(hexNode);
 				current.add(hexNode);
 
@@ -180,6 +208,9 @@ public class Board {
 					activeCard.deactivateCard();
 					activeCard.activateCard();
 				}
+				ArrayList<HexNode> entry = (ArrayList<HexNode>) playerMaps.get(player.getPlayerNum()).get(quadrant);
+				entry.add(hexNode);
+				playerMaps.get(player.getPlayerNum()).put(quadrant, entry);
 			} else if(hexNode.hasSettlement() && !hexNode.isConfirmed()) {
 				settlementObj.removeImgAt(button.getLayoutX() - 35, button.getLayoutY() - 20, 73.6, 46);
 				hexNode.removeSettlement();
@@ -191,10 +222,14 @@ public class Board {
 					activeCard.activateCard();
 				}
 				current.remove(hexNode);
+				ArrayList<HexNode> entry = (ArrayList<HexNode>) playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).get(quadrant);
+				entry.remove(hexNode);
+				playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).put(quadrant, entry);
 			}
 		});
 		//button.setDisable(true);
-		button.setVisible(false);
+		if (settlementLimit==settlementsPlacedSinceReset)
+			button.setVisible(false);
 
 		return button;
 	}
@@ -227,6 +262,7 @@ public class Board {
 	public void resetSettlementsPlaced() {
 		settlementQueue.clear();
 		settlementsPlacedSinceReset = 0;
+		settlementLimit=3;
 	}
 
 	public static Board get() {
@@ -236,8 +272,8 @@ public class Board {
 		return Board.board;
 	}
 	public void confirmPlacement(){
-		for(int i =0; i<current.size(); i++){
-			current.get(i).setConfirmed();
+		for (HexNode hexNode : current) {
+			hexNode.setConfirmed();
 		}
 		current = new ArrayList<>();
 	}
@@ -246,8 +282,27 @@ public class Board {
 			current.get(i).removeSettlement();
 		}
 		current = new ArrayList<>();
+		settlementLimit=3;
+		settlementsPlacedSinceReset=0;
+		TurnHandler.get().getCurrentPlayer().usedActionTile(false);
+	}
+	public void allowAdditionalSettlement(){
+		settlementLimit++;
+	}
+	public HexNode[][] getHexMatrix(){
+		return boardGraph.getHexMatrix();
+	}
+	public TreeMap<Integer, ArrayList<HexNode>> getPlayerMap(int x){
+		return playerMaps.get(x);
+	}
+	public ArrayList<TreeMap<Integer, ArrayList<HexNode>>> getPlayerMaps(){
+		return playerMaps;
+	}
+	public int getSettlementLimit(){
+		return settlementLimit;
 	}
 }
+
 
 
 

@@ -8,6 +8,7 @@ public class TerrainCard {
     private Image cardImage;
     private String terrainToken;
     private boolean isActive;
+    public static TerrainCard terrainCard;
 
     public TerrainCard(int type) {
         isActive = false;
@@ -65,7 +66,7 @@ public class TerrainCard {
                 ArrayList<HexNode> settlementQueue = board.getSettlementQueue();
 
                 if(node == null) {}
-                else if((board.getSettlementsPlacedSinceReset() < 3 ||
+                else if((board.getSettlementsPlacedSinceReset() < board.getSettlementLimit() ||
                         node.hasSettlement()) &&
                         node.getTerrainType().equals(terrainToken) &&
                         !(node.hasSettlement() &&
@@ -77,8 +78,13 @@ public class TerrainCard {
                     //button.setDisable(false);
                     button.setVisible(true);
                     buttonSet.add(button);
-                }
-                if(node != null)
+                    if(turnHandler.getCurrentPlayer().usedActionTile()){
+                        button.setVisible(true);
+                    }
+                    if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()){
+                        button.setVisible(false);
+                    }
+                /*if(node != null)
                     System.out.println(r + " " + c + " " +
                             (board.getSettlementsPlacedSinceReset() < 3) + " |1| " +
                             (node.hasSettlement()) + " &2& " +
@@ -90,15 +96,17 @@ public class TerrainCard {
                             hasBorderingSettlement(button) + " |7| " +
                             ((node.hasSettlement() &&
                                     node.getPlayerNum() == turnHandler.getCurrentPlayer().getPlayerNum() &&
-                                    (!settlementQueue.isEmpty()? settlementQueue.get(settlementQueue.size() - 1).equals(node) : false))));
+                                    (!settlementQueue.isEmpty()? settlementQueue.get(settlementQueue.size() - 1).equals(node) : false))));*/
+                //button.setVisible(false);
+                }
             }
-            System.out.println();
+            //System.out.println();
         }
 
         if(buttonSet.isEmpty() ||
                 (buttonSet.size() == 1 &&
                         buttonSet.stream().findFirst().get().getHexNode().hasSettlement() &&
-                        board.getSettlementsPlacedSinceReset() < 3)) {
+                        board.getSettlementsPlacedSinceReset() < board.getSettlementLimit())) {
             for(HexButton[] row : buttonMatrix) {
                 for(HexButton button : row) {
                     HexNode node = button != null? button.getHexNode() : null;
@@ -150,6 +158,9 @@ public class TerrainCard {
             }
         }
         return false;
+    }
+    public static TerrainCard get() {
+        return TerrainCard.terrainCard;
     }
 }
 

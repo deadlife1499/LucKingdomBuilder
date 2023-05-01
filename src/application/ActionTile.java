@@ -1,17 +1,21 @@
 package application;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
 
-public class ActionTile extends HexButton{
+public class ActionTile extends HexButton {
     private HexNode hexNode;
-    String type;
-    HexButton button;
+    private String type;
+    private HexButton button;
+    private boolean used;
     private double radianStep = (2 * Math.PI) / 6;
 
 
     public ActionTile(double radius, String type) {
         super(radius, new HexNode(type));
+        buildTile(33);
         this.type=type;
     }
 
@@ -38,5 +42,14 @@ public class ActionTile extends HexButton{
 
         setLayoutX(x * xMultiplier);
         setLayoutY(y * yMultiplier);
+    }
+    public String getType(){
+        return type;
+    }
+    public boolean isUsed(){
+        return used;
+    }
+    public void setUsed(boolean x){
+        used = x;
     }
 }
