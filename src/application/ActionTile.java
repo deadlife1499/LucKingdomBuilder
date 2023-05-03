@@ -1,55 +1,96 @@
 package application;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
 
-public class ActionTile extends HexButton {
-    private HexNode hexNode;
-    private String type;
-    private HexButton button;
-    private boolean used;
-    private double radianStep = (2 * Math.PI) / 6;
-
-
-    public ActionTile(double radius, String type) {
-        super(radius, new HexNode(type));
-        buildTile(33);
-        this.type=type;
+public class ActionTile { 
+	private ActionTileTemplate tileObj;
+	
+    public ActionTile(HexButton hexButton, int x, int y, int width, int height, String type) {
+    	tileObj = createTile(type);
     }
-
-    private void buildTile(double radius) {
-        setFill(Color.BLACK);
-        //setStroke(Color.WHITESMOKE);
-        //setEffect(new DropShadow(10, Color.BLACK));
-        setStrokeWidth(5);
-        //setStrokeType(StrokeType.INSIDE);
-
-        for (int i = 0; i < 6; i++) {
-            double angle = radianStep * i;
-
-            getPoints().add(Math.cos(angle) * radius / 1.1);
-            getPoints().add(Math.sin(angle) * radius / 1.1);
-        }
-        getTransforms().add(new Rotate(90, 0, 0));
+    
+    private ActionTileTemplate createTile(String type) {
+    	ActionTileTemplate obj = null;
+    	
+    	switch(type) {
+    	case "fa":
+    		obj = new Farm();
+    		
+    		break;
+    	case "ha":
+    		obj = new Harbor();
+    		
+    		break;
+    	case "oa":
+    		obj = new Oasis();
+    		
+    		break;
+    	case "or":
+    		obj = new Oracle();
+    		
+    		break;
+    	case "pa":
+    		obj = new Paddock();
+    		
+    		break;
+    	case "ta":
+    		obj = new Tavern();
+    		
+    		break;
+    	case "to":
+    		obj = new Tower();
+    		
+    		break;
+    	}
+    	return obj;
     }
-
-    public void setBounds(double x, double y) {
-        Window window = Window.get();
-        double xMultiplier = window.getWidth() / 1920;
-        double yMultiplier = window.getHeight() / 1080;
-
-        setLayoutX(x * xMultiplier);
-        setLayoutY(y * yMultiplier);
+    
+    private class ActionTileTemplate {
+    	private Image tileImage;
+    	
+    	private ActionTileTemplate(String type) {
+    		tileImage = new Image(getClass().getResourceAsStream("/images/KB-" + type + ".png"));
+    	}
     }
-    public String getType(){
-        return type;
+    
+    private class Farm extends ActionTileTemplate {
+    	private void score() {
+    		
+    	}
     }
-    public boolean isUsed(){
-        return used;
+    
+    private class Harbor extends ActionTileTemplate {
+    	
     }
-    public void setUsed(boolean x){
-        used = x;
+    
+    private class Oasis extends ActionTileTemplate {
+    	
+    }
+    
+    private class Oracle extends ActionTileTemplate {
+    	
+    }
+    
+    private class Paddock extends ActionTileTemplate {
+    	
+    }
+    
+    private class Tavern extends ActionTileTemplate {
+    	
+    }
+    
+    private class Tower extends ActionTileTemplate {
+    	
     }
 }
+
+
+
+
+
+
+
+
+
