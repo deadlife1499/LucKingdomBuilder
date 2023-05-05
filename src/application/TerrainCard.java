@@ -56,11 +56,8 @@ public class TerrainCard {
 		HexButton[][] buttonMatrix = board.getButtonMatrix();
 		HashSet<HexButton> buttonSet = new HashSet<>();
 		
-		//for(HexButton[] row : buttonMatrix) {
-			//for(HexButton button : row) {
-		for(int r = 0; r < buttonMatrix.length; r++) {
-			for(int c = 0; c < buttonMatrix[r].length; c++) {
-				HexButton button = buttonMatrix[r][c];
+		for(HexButton[] row : buttonMatrix) {
+			for(HexButton button : row) {
 				HexNode node = button != null? button.getHexNode() : null;
 				TurnHandler turnHandler = TurnHandler.get();
 				ArrayList<HexNode> settlementQueue = board.getSettlementQueue();
@@ -79,23 +76,7 @@ public class TerrainCard {
 					button.setVisible(true);
 					buttonSet.add(button);
 				}
-				/*
-				if(node != null)
-				System.out.println(r + " " + c + " " +
-						(board.getSettlementsPlacedSinceReset() < 3) + " |1| " +
-						(node.hasSettlement()) + " &2& " +
-						(node.getTerrainType().equals(terrainToken)) + " &3& " + 
-						!(node.hasSettlement()) + " &4& " +
-						(!settlementQueue.isEmpty()? !settlementQueue.get(settlementQueue.size() - 1).equals(node) : true) + " &5& " +
-						!(node.hasSettlement() && 
-						(!settlementQueue.isEmpty()? !settlementQueue.get(settlementQueue.size() - 1).equals(node) : true)) + " E6E " +
-						hasBorderingSettlement(button) + " |7| " + 
-						((node.hasSettlement() && 
-						node.getPlayerNum() == turnHandler.getCurrentPlayer().getPlayerNum() && 
-						(!settlementQueue.isEmpty()? settlementQueue.get(settlementQueue.size() - 1).equals(node) : false))));
-						*/
 			}
-			//System.out.println();
 		}
 		
 		if(buttonSet.isEmpty() || 

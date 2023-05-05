@@ -1,5 +1,7 @@
 package application;
 import java.awt.Graphics2D;
+import javafx.animation.*;
+import javafx.animation.Transition.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.util.Duration;
 
 public class GameObject extends ImageView {
 	//new Image(getClass().getResourceAsStream("/images/filename"));

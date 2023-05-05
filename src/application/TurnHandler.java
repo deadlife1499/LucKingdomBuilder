@@ -14,34 +14,13 @@ public class TurnHandler {
 	private ListIterator<Player> playerIter;
 	private int playerAmt;
 	private static TurnHandler turnHandler;
-	private static final String[] settlementColors = {"RED", "BLUE", "BROWN", "YELLOW"};//, "GREEN", "PURPLE", "ORANGE", "PINK"};
-	//private FadeTransition fade;
 	
 	public TurnHandler() {
 		playerList = new ArrayList<>();
 		playerAmt = 4;
-		
-		/*
-		Rectangle fadeRectangle = new Rectangle();
-		fadeRectangle.setWidth(1920);
-		fadeRectangle.setHeight(1080);
-		fadeRectangle.setOpacity(0);
-		
-		fade = new FadeTransition(Duration.millis(3000), fadeRectangle);
-	    fade.setFromValue(1.0);
-	    fade.setToValue(0.3);
-	    fade.setCycleCount(4);
-	    fade.setAutoReverse(true);
-	    
-	    ObjectHandler objectHandler = ObjectHandler.get();
-	    objectHandler.add(fadeRectangle);
-	 
-	    //ft.play();
-	     */
 	}
 	
 	public void nextTurn() {
-		getCurrentPlayer().checkAdjacent();
 		playerIter.next();
 		
 		if(!playerIter.hasNext()) {
@@ -52,11 +31,12 @@ public class TurnHandler {
 		getCurrentPlayer().startTurn();
 		
 		GUI gui = GUI.get();
+		Board board = Board.get();
+		
 		gui.setPlayerLabelText("Player " + (getCurrentPlayer().getPlayerNum() + 1));
-		//fade.play();
+		board.drawTerrainCard();
 	}
 	
-	//public FadeTransition getFadeTransition() {return fade;}
 	public Player getCurrentPlayer() {
 		playerIter.next();
 		

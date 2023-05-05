@@ -6,21 +6,69 @@ public class HexNode {
     private String terrain;
     private HexNode[] bordering;
     private boolean hasSettlement;
-    private HexButton hexButton;
     private int playerNum;
+    private ActionTile actionTile;
     
     // 0 1 2 3 4 5
     // NE E SE SW W NW
     public HexNode(String terrain){
+    	this.terrain = terrain;
         bordering = new HexNode[6];
-        this.terrain = terrain;
         hasSettlement = false;
-        
-        TurnHandler turnHandler = TurnHandler.get();
         playerNum = -1;
+        actionTile = null;
+    }
+    
+    public void checkAdjacent() {
+    	HexNode nodeAT = null;
+    	
+    	for(HexNode node : bordering) {
+    		if(node != null && node.getTerrainType().length() > 1) {
+    			nodeAT = node;
+    		}
+    	} if(nodeAT == null) {
+    		return;
+    	}
+    	TurnHandler turnHandler = TurnHandler.get();
+    	Player player = turnHandler.getCurrentPlayer();
+    	
+    	if(nodeAT.getActionTile().takeToken()) {
+    		player.addActionTile(nodeAT.getActionTile());
+    	}
+    }
+    
+    public void removeAdjacent() {
+    	HexNode nodeAT = null;
+    	
+    	for(HexNode node : bordering) {
+    		if(node.getTerrainType().length() > 1) {
+    			nodeAT = node;
+    		}
+    	} if(nodeAT == null) {
+    		return;
+    	}
+    	TurnHandler turnHandler = TurnHandler.get();
+    	Player player = turnHandler.getCurrentPlayer();
+    	HexNode nodeAT2 = null;
+    	
+    	for(HexNode node : nodeAT.getBordering()) {
+    		if(node.hasSettlement && node.getPlayerNum() == player.getPlayerNum()) {
+    			nodeAT2 = node;
+    		}
+    	} if(nodeAT2 != null) {
+    		return;
+    	}
+    	nodeAT.getActionTile().returnToken();
+    	player.removeActionTile(nodeAT.getActionTile());
     }
     
     public boolean hasSettlement() {return hasSettlement;}
+    public int getPlayerNum() {return playerNum;}
+    public HexNode[] getBordering(){return bordering;}    
+    public String getTerrainType() {return terrain;}
+    public ActionTile getActionTile() {return actionTile;}
+    
+    public void setActionTile(ActionTile tile) {actionTile = tile;}
     
     public void addSettlement() {
     	TurnHandler turnHandler = TurnHandler.get();
@@ -32,13 +80,6 @@ public class HexNode {
         playerNum = player.getPlayerNum();
     }
     
-    public HexButton getHexButton() {return hexButton;}
-    public int getPlayerNum() {return playerNum;}
-    
-    public void setHexButton(HexButton button) {
-    	hexButton = button;
-    }
-    
     public void removeSettlement() {
     	TurnHandler turnHandler = TurnHandler.get();
     	Player player = turnHandler.getCurrentPlayer();
@@ -46,7 +87,15 @@ public class HexNode {
     	player.addSettlement();
     	hasSettlement = false;
     }
-    
-    public HexNode[] getBordering(){return bordering;}    
-    public String getTerrainType() {return terrain;}
 }
+
+
+
+
+
+
+
+
+
+
+

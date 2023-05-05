@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class Board {
 	private static Board board;
@@ -134,7 +136,7 @@ public class Board {
 				if(terrainMatrix[r][c].length() < 2) {
 					createHexButton(hexMatrix, r, c, 384, 48, 1152, 973.75);
 				} else {
-					//createActionTile(hexMatrix, r, c, 384, 48, 1152, 973.75);
+					createActionTile(hexMatrix, r, c, 384, 48, 1152, 973.75);
 				}
 			}
 		}
@@ -142,8 +144,6 @@ public class Board {
 
 	private HexButton createHexButton(HexNode[][] hexMatrix, int r, int c, double xOffset, double yOffset, double width, double height) {
 		HexButton button = new HexButton(33, hexMatrix[r][c]);
-		HexNode[][] matrix = boardGraph.getMatrix();
-		matrix[r][c].setHexButton(button);
 
 		double hexWidth = (width - 31 * (width / 1152)) / 19;
 		double hexHeight = height / 19;
@@ -152,6 +152,7 @@ public class Board {
 		//button.setOpacity(0);
 
 		button.setOnMouseClicked(e -> {
+			GUI gui = GUI.get();
 			HexNode hexNode = button.getHexNode();
 
 			if(settlementObj == null) {
@@ -163,13 +164,13 @@ public class Board {
 			}
 
 			if(!hexNode.hasSettlement()) {
-				GUI gui = GUI.get();
 				TurnHandler turnHandler = TurnHandler.get();
 				Player player = turnHandler.getCurrentPlayer();
 				Image settlement = player.getSettlementImg();
 
 				settlementObj.add(settlement, button.getLayoutX() - 28 + Math.random() * 16, button.getLayoutY() - 28 + Math.random() * 16, 
 						settlement.getWidth() * (42 / settlement.getHeight()), 42);
+	
 				hexNode.addSettlement();
 				settlementsPlacedSinceReset++;
 				settlementQueue.add(hexNode);
@@ -182,6 +183,7 @@ public class Board {
 				if(settlementsPlacedSinceReset == 3) {
 					gui.setConfirmButtonDisable(false);
 				}
+				hexNode.checkAdjacent();
 			} else {
 				settlementObj.removePreviousImages(1);
 				hexNode.removeSettlement();
@@ -192,6 +194,11 @@ public class Board {
 					activeCard.deactivateCard();
 					activeCard.activateCard();
 				}
+				
+				if(settlementsPlacedSinceReset == 2) {
+					gui.setConfirmButtonDisable(true);
+				}
+				hexNode.removeAdjacent();
 			}
 		});
 		//button.setDisable(true);
@@ -201,7 +208,8 @@ public class Board {
 	}
 
 	private void createActionTile(HexNode[][] hexMatrix, int r, int c, double xOffset, double yOffset, double width, double height) {
-
+		ActionTile tile = new ActionTile(buttonMatrix[r][c], r, c, xOffset, yOffset, width, height, hexMatrix[r][c].getTerrainType());
+		hexMatrix[r][c].setActionTile(tile);
 	}
 
 	private void createTerrainCards() {
