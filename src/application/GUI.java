@@ -2,6 +2,7 @@ package application;
 
 import java.util.ArrayList;
 
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -25,9 +26,11 @@ public class GUI {
 	private Label playerLabel;
 	private Button terrainButton;
 	private static GUI gui;
+	private Group playerStatsGroup;
+	private ArrayList<Player> playerList;
 
 	public GUI() {
-		Image backgroundImage = new Image(getClass().getResourceAsStream("/images/KB-Background.png"));
+		Image backgroundImage = new Image(getClass().getResourceAsStream("/images/KB-MainBackground.png"));
 		GameObject background = new GameObject(backgroundImage, 0, 0, 1920, 1080, 0);
 		ColorAdjust colorAdjust = new ColorAdjust();  
 		
@@ -35,7 +38,7 @@ public class GUI {
 	    colorAdjust.setHue(0);     	      
 	    colorAdjust.setBrightness(-.4);  	      
 	    colorAdjust.setSaturation(0);   
-	    background.setEffect(colorAdjust);
+	    //background.setEffect(colorAdjust);
 		
 		Board board = Board.get();
 		confirmButton = new GameButton("Confirm");
@@ -44,7 +47,7 @@ public class GUI {
 		confirmButton.setTextFill(Color.WHITE); 
 		confirmButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
 		confirmButton.setBackground(null);
-		confirmButton.setBounds(80, 650, 200, 75);
+		confirmButton.setBounds(138, 500, 200, 75);
 
 		confirmButton.setOnAction(e -> {
 			if(board.getSettlementsPlacedSinceReset() == board.getSettlementLimit()) {
@@ -71,7 +74,7 @@ public class GUI {
 		cancelButton.setTextFill(Color.WHITE); 
 		cancelButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
 		cancelButton.setBackground(null);
-		cancelButton.setBounds(80, 800, 200, 75);
+		cancelButton.setBounds(138, 600, 200, 75);
 
 		cancelButton.setOnAction(e -> {
 			GameObject settlementObj = board.getSettlementObj();
@@ -92,12 +95,12 @@ public class GUI {
 			//Board.get().getActiveCard().reset();
 		});
 
-		nextTurnButton = new GameButton("[Next turn]");
+		nextTurnButton = new GameButton("Next turn");
 		nextTurnButton.setFont(font);
 		nextTurnButton.setTextFill(Color.WHITE); 
 		nextTurnButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
 		nextTurnButton.setBackground(null);
-		nextTurnButton.setBounds(80, 950, 200, 75);
+		nextTurnButton.setBounds(138, 700, 200, 75);
 
 		nextTurnButton.setOnAction(e -> {
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);
@@ -113,9 +116,9 @@ public class GUI {
 		moveSelectionBox = new HBox();
 		ScrollPane moveSelectionScrollPane = new ScrollPane(moveSelectionBox);
 
-		moveSelectionScrollPane.setLayoutX(50);
-		moveSelectionScrollPane.setLayoutY(300);
-		moveSelectionScrollPane.setPrefSize(240, 62);
+		moveSelectionScrollPane.setLayoutX(75);
+		moveSelectionScrollPane.setLayoutY(190);
+		moveSelectionScrollPane.setPrefSize(320, 62);
 
 		ObjectHandler objectHandler = ObjectHandler.get();
 		objectHandler.add(moveSelectionScrollPane);
@@ -123,10 +126,12 @@ public class GUI {
 		TurnHandler turnHandler = TurnHandler.get();
 		playerLabel = new Label("Player " + (turnHandler.getCurrentPlayer().getPlayerNum() + 1));
 
-		playerLabel.setLayoutX(50);
+		font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 70);
+		playerLabel.setFont(font);
+		playerLabel.setTextFill(Color.WHITE); 
+		playerLabel.setLayoutX(120);
 		playerLabel.setLayoutY(40);
 		playerLabel.setPrefSize(300, 80);
-		playerLabel.setFont(new Font("Ariel", 70));
 
 		objectHandler.add(playerLabel);
 
@@ -155,6 +160,8 @@ public class GUI {
 		setCancelButtonDisable(true);
 
 		Scoring.scoreCards();
+		updatePlayerStats();
+		player.updateSettlementsRemaining();
 	}
 
 	public HBox getMoveSelectionBox() {return moveSelectionBox;}
@@ -163,6 +170,67 @@ public class GUI {
 	public void setConfirmButtonDisable(boolean disabled) {confirmButton.setDisable(disabled);}
 	public void setCancelButtonDisable(boolean disabled) {cancelButton.setDisable(disabled);}
 	public void setNextButtonDisable(boolean disabled) {nextTurnButton.setDisable(disabled);}
+	
+	@SuppressWarnings("unchecked")
+	public void updatePlayerStats() {
+		ObjectHandler objectHandler = ObjectHandler.get();
+		TurnHandler turnHandler = TurnHandler.get();
+		if(playerList == null) {
+			playerList = (ArrayList<Player>)turnHandler.getPlayerList().clone();
+		}
+		playerList.add(playerList.remove(0));
+		
+		if(playerStatsGroup == null) {
+			playerStatsGroup = new Group();
+			objectHandler.add(playerStatsGroup);
+		} else {
+			playerStatsGroup.getChildren().clear();
+		}
+		
+		for(int i = 0; i < playerList.size() - 1; i++) {
+			Label playerLabel = new Label("Player " + (playerList.get(i).getPlayerNum() + 1));
+			playerStatsGroup.getChildren().add(playerLabel);
+
+			Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 20);
+			playerLabel.setFont(font);
+			playerLabel.setTextFill(Color.WHITE); 
+			playerLabel.setLayoutX(60);
+			playerLabel.setLayoutY(875 + i * 75);
+			playerLabel.setPrefSize(300, 80);
+
+			Image settlementImg = playerList.get(i).getSettlementIcon();
+			ImageView settlementObj = new ImageView(settlementImg);
+			
+			settlementObj.setLayoutX(70);
+			settlementObj.setLayoutY(860 + i * 75);
+			settlementObj.setFitWidth(settlementImg.getWidth() / 10);
+			settlementObj.setFitHeight(settlementImg.getHeight() / 10);
+			
+			playerStatsGroup.getChildren().add(settlementObj);
+			Label settlementNumLabel = new Label("x " + playerList.get(i).getSettlementNum());
+			playerStatsGroup.getChildren().add(settlementNumLabel);
+
+			font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 40);
+			settlementNumLabel.setFont(font);
+			settlementNumLabel.setTextFill(Color.WHITE); 
+			settlementNumLabel.setLayoutX(125);
+			settlementNumLabel.setLayoutY(840 + i * 75);
+			settlementNumLabel.setPrefSize(300, 80);
+			
+			ArrayList<ActionTile> actionTileList = playerList.get(i).getActionTileList();
+			for(int j = 0; j < actionTileList.size(); j++) {
+				Image tileImage = actionTileList.get(j).getTileObj().getLocationImage();
+				ImageView tileObj = new ImageView(tileImage);
+				
+				tileObj.setLayoutX(200 + j * 50);
+				tileObj.setLayoutY(855 + i * 75);
+				tileObj.setFitWidth(tileImage.getWidth() / 4);
+				tileObj.setFitHeight(tileImage.getHeight() / 4);
+				
+				playerStatsGroup.getChildren().add(tileObj);
+			}
+		}
+	}
 
 	public static GUI get() {
 		if(GUI.gui == null) {

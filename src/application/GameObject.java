@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.util.Duration;
+import java.lang.*;
 
 public class GameObject extends ImageView {
 	//new Image(getClass().getResourceAsStream("/images/filename"));
@@ -23,6 +24,7 @@ public class GameObject extends ImageView {
 	private int sortingLayer;
 	private ArrayList<ImageView> imageList;
 	private ObjectHandler objectHandler;
+	private GameObject temp;
 
 	public GameObject() {
 		super(nullImage);
@@ -48,6 +50,7 @@ public class GameObject extends ImageView {
 
 		objectHandler = ObjectHandler.get();
 		objectHandler.add(this);
+		temp = new GameObject();
 	}
 
 	public void setImage(Image image, double x, double y, double width, double height) {
@@ -71,7 +74,42 @@ public class GameObject extends ImageView {
 		imgView.setFitWidth(width1);
 		imgView.setFitHeight(height1);
 		imageList.add(imgView);
+		//temp = new GameObject(imgView.getImage(), x1, y1, width1, height1, 2);
+		//wait(1500);
+		Image image2 = getImage();
+		double x2 = getX();
+		double y2 = getY();
+		double width2 = getFitWidth();
+		double height2 = getFitHeight();
 
+		BufferedImage bImg1 = SwingFXUtils.fromFXImage(image1, null);
+		BufferedImage bImg2 = SwingFXUtils.fromFXImage(image2, null);
+
+		int width = (int)(Math.max(x1 + width1, x2 + width2) - Math.min(x1, x2));
+		int height = (int)(Math.max(y1 + height1, y2 + height2) - Math.min(y1, y2));
+
+		BufferedImage combinedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = combinedImage.createGraphics();
+
+		double x = Math.min(x1, x2);
+		double y = Math.min(y1, y2);
+
+		g.drawImage(bImg2, (int)(x2 - x), (int)(y2 - y), (int)width2, (int)height2, null);
+		g.drawImage(bImg1, (int)(x1 - x), (int)(y1 - y), (int)width1, (int)height1, null);
+		g.dispose();
+
+		WritableImage img = SwingFXUtils.toFXImage(combinedImage, null);
+		setImage(img);
+		setBounds(Math.min(x1, x2), Math.min(y1, y2), width, height);
+	}
+	public void addSettlement(Image image1, double x1, double y1, double width1, double height1){
+		ImageView imgView = new ImageView(image1);
+		imgView.setX(x1);
+		imgView.setY(y1);
+		imgView.setFitWidth(width1);
+		imgView.setFitHeight(height1);
+		imageList.add(imgView);
+		//this.setVisible(false);
 		Image image2 = getImage();
 		double x2 = getX();
 		double y2 = getY();
@@ -99,7 +137,7 @@ public class GameObject extends ImageView {
 		setBounds(Math.min(x1, x2), Math.min(y1, y2), width, height);
 	}
 
-	public void removeImgAt(double x, double y, double width, double height) {
+	public void removeImgAt(double x, double y, double width, double height){
 		for(int i = 0; i < imageList.size(); i++) {
 			ImageView imgView = imageList.get(i);
 
@@ -125,7 +163,7 @@ public class GameObject extends ImageView {
 		}
 	}
 
-	public void removePreviousImages(int x) {
+	public void removePreviousImages(int x){
 		if(imageList.size() == 0 || x == 0) {
 			return;
 		}
@@ -193,6 +231,9 @@ public class GameObject extends ImageView {
 
 	public String toString() {
 		return getImage() + " " + getX() + " " + getY() + " " + getFitWidth() + " " + getFitHeight() + " " +  getSortingLayer();
+	}
+	public ImageView getTemp(){
+		return temp;
 	}
 }
 

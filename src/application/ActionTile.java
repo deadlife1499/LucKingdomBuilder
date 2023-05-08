@@ -11,6 +11,7 @@ public class ActionTile {
     private int row, col;
     private double x, y, width, height;
     private HashSet<Player> playerSet;
+    private boolean isNew;
 
     public ActionTile(HexButton hexButton, int row, int col, double x, double y, double width, double height, String type) {
         this.row = row;
@@ -25,6 +26,7 @@ public class ActionTile {
         }
 
         playerSet = new HashSet<>();
+        isNew = false;
     }
 
     public ActionTileTemplate getTileObj() {return tileObj;}
@@ -45,9 +47,10 @@ public class ActionTile {
     public void returnToken() {
         TurnHandler turnHandler = TurnHandler.get();
         Player player = turnHandler.getCurrentPlayer();
-
-        tileObj.replaceTile(2 - playerSet.size());
-        playerSet.remove(player);
+        if (tileObj!=null){
+            tileObj.replaceTile(2 - playerSet.size());
+            playerSet.remove(player);
+        }
     }
 
     private ActionTileTemplate createTile(String type) {
@@ -201,7 +204,8 @@ public class ActionTile {
         }
 
         private void activate() {
-
+            Board.get().setPlayerSettlementsActive("barn");
+            //while (!Board.get().getTavernDone()){}
         }
 
         private void deactivate() {
@@ -233,7 +237,11 @@ public class ActionTile {
         }
 
         private void activate() {
-
+            Board.get().setPlayerSettlementsActive("harbor");
+        }
+        public void repop(){
+            Board.get().allowAdditionalSettlement();
+            Board.get().getActiveCard().tempActivateCard("w");
         }
 
         private void deactivate() {
@@ -296,7 +304,9 @@ public class ActionTile {
         }
 
         private void activate() {
-
+            Board.get().setPlayerSettlementsActive("tavvy");
+            //System.out.println("should see all");
+            //Board.get().allowAdditionalSettlement();
         }
 
         private void deactivate() {
@@ -332,12 +342,10 @@ public class ActionTile {
             new GameObject(locationImage, x + tileWidth * col + col / 10 * (1.5 * (width / 1152)) + row % 2 * (29.5 * (width / 1152)) - 27, y + row * tileHeight - 34.6, 56, 67.2, 2);
         }
     }
+    public void setNew(boolean is){
+        isNew = is;
+    }
+    public boolean getNew(){
+        return isNew;
+    }
 }
-
-
-
-
-
-
-
-

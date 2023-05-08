@@ -32,6 +32,7 @@ public class TurnHandler {
 		Board board = Board.get();
 
 		gui.setPlayerLabelText("Player " + (getCurrentPlayer().getPlayerNum() + 1));
+		gui.updatePlayerStats();
 		board.drawTerrainCard();
 	}
 
@@ -39,6 +40,9 @@ public class TurnHandler {
 		playerIter.next();
 
 		return playerIter.previous();
+	}
+	public ArrayList<Player> getPlayerList() {
+		return playerList;
 	}
 
 	public void setPlayers(String[] colors) {

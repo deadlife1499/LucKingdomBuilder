@@ -4,7 +4,10 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import com.sun.source.tree.Tree;
+
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public class Scoring {
     private static HashMap<String, Boolean> cardMap;
@@ -39,6 +42,7 @@ public class Scoring {
                 score += score(cardEntry.getKey());
             }
         }
+        score+= scoreCity();
         player.setTempScore(score);
         player.updateScore();
 
@@ -121,14 +125,15 @@ public class Scoring {
 
     public static void displayCards() {
         GameObject cardObj = new GameObject();
+        cardObj.setEffect(new DropShadow(10, Color.BLACK));
         int cardY = 50;
 
         for(Entry<String, Boolean> cardEntry : cardMap.entrySet()) {
             if(cardEntry.getValue()) {
                 Image cardImg = new Image("/images/" + cardEntry.getKey() + "Objective.png");
 
-                cardObj.add(cardImg, 1650, cardY, cardImg.getWidth() / 2, cardImg.getHeight() / 2);
-                cardY += 220;
+                cardObj.add(cardImg, 1730, cardY, cardImg.getWidth() / 2, cardImg.getHeight() / 2);
+                cardY += 250;
             }
         }
     }
@@ -341,5 +346,19 @@ public class Scoring {
                 score+=6;
         }
         return score;
+    }
+    
+    private static int scoreCity(){
+        int points =0;
+        for(ArrayList<HexNode> list : Board.get().getPlayerMaps().get(playerNum).values()){
+            for (HexNode z : list){
+                for (HexNode k : z.getBordering()){
+                    if (k!=null && k.getTerrain().equals("s")){
+                        points+=3;
+                    }
+                }
+            }
+        }
+        return points;
     }
 }

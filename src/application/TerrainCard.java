@@ -70,11 +70,11 @@ public class TerrainCard {
                         node.hasSettlement()) &&
                         node.getTerrainType().equals(terrainToken) &&
                         !(node.hasSettlement() &&
-                        (!settlementQueue.isEmpty()? !settlementQueue.get(settlementQueue.size() - 1).equals(node) : true)) &&
+                                (!settlementQueue.isEmpty()? !settlementQueue.get(settlementQueue.size() - 1).equals(node) : true)) &&
                         hasBorderingSettlement(button) ||
                         (node.hasSettlement() &&
-                        node.getPlayerNum() == turnHandler.getCurrentPlayer().getPlayerNum() &&
-                        (!settlementQueue.isEmpty()? settlementQueue.get(settlementQueue.size() - 1).equals(node) : false))) {
+                                node.getPlayerNum() == turnHandler.getCurrentPlayer().getPlayerNum() &&
+                                (!settlementQueue.isEmpty()? settlementQueue.get(settlementQueue.size() - 1).equals(node) : false))) {
                     //button.setDisable(false);
                     button.setVisible(true);
                     buttonSet.add(button);

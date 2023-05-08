@@ -64,9 +64,10 @@ public class HexNode {
         HexNode nodeAT = null;
 
         for(HexNode node : bordering) {
-            if(node != null && node.getTerrainType().length() > 1) {
-                nodeAT = node;
-            }
+            if(node!=null)
+                if(node.getTerrainType().length() > 1) {
+                    nodeAT = node;
+                }
         } if(nodeAT == null) {
             return;
         }
@@ -75,14 +76,17 @@ public class HexNode {
         HexNode nodeAT2 = null;
 
         for(HexNode node : nodeAT.getBordering()) {
-            if(node != null && node.hasSettlement && node.getPlayerNum() == player.getPlayerNum()) {
-                nodeAT2 = node;
-            }
+            if(node!=null)
+                if(node.hasSettlement && node.getPlayerNum() == player.getPlayerNum()) {
+                    nodeAT2 = node;
+                }
         } if(nodeAT2 != null) {
             return;
         }
-        nodeAT.getActionTile().returnToken();
-        player.removeActionTile(nodeAT.getActionTile());
+        if (nodeAT!=null) {
+            nodeAT.getActionTile().returnToken();
+            player.removeActionTile(nodeAT.getActionTile());
+        }
     }
 
     public boolean hasSettlement() {return hasSettlement;}

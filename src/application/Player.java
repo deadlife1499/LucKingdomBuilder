@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Stack;
 import application.ActionTile.ActionTileTemplate;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,6 +31,7 @@ public class Player {
     private boolean usedActionTile;
     private Image firstPlayerToken;
     private static GameObject firstPlayerObj;
+    private static Group settlementAmountGroup;
 
     public Player(int num, String color) {
         score = 0;
@@ -46,10 +48,10 @@ public class Player {
         tempScore =0;
         turnConfirmed = false;
         firstPlayerToken = new Image(getClass().getResourceAsStream("/images/NullImage.png"));
-        
+
         if(firstPlayerObj == null) {
-        	firstPlayerObj = new GameObject(firstPlayerToken, 145, 10, 50, 57.67, 2);
-        	firstPlayerObj.setEffect(new DropShadow(10, Color.BLACK));
+            firstPlayerObj = new GameObject(firstPlayerToken, 215, 10, 50, 57.67, 2);
+            firstPlayerObj.setEffect(new DropShadow(10, Color.BLACK));
         }
     }
 
@@ -62,6 +64,9 @@ public class Player {
     }
     public int getSettlementNum() {return settlementNum;}
     public int getPlayerNum() {return playerNum;}
+    public ArrayList<ActionTile> getActionTileList() {
+    	return actionTileList;
+    }
 
     public void setScore(int score) {this.score = score;}
     public void setTempScore(int score) {this.tempScore = score;}
@@ -70,22 +75,25 @@ public class Player {
         ObjectHandler objectHandler = ObjectHandler.get();
 
         scoreLabel = new Label("Score: ");
+        
+        Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 50);
+        scoreLabel.setFont(font);
+		scoreLabel.setTextFill(Color.WHITE); 
         scoreLabel.setVisible(true);
-        scoreLabel.setLayoutX(50);
-        scoreLabel.setLayoutY(120);
+        scoreLabel.setLayoutX(160);
+        scoreLabel.setLayoutY(100);
         scoreLabel.setPrefSize(300, 80);
-        scoreLabel.setFont(new Font("Ariel", 70));
 
         objectHandler.add(scoreLabel);
     }
-    
+
     private void displayFirstPlayerToken() {
-    	firstPlayerObj.setImage(firstPlayerToken);
+        firstPlayerObj.setImage(firstPlayerToken);
     }
-    
+
     public void setFirstPlayer() {
-    	firstPlayerToken = new Image(getClass().getResourceAsStream("/images/KB-FirstPlayerToken.png"));
-    	displayFirstPlayerToken();
+        firstPlayerToken = new Image(getClass().getResourceAsStream("/images/KB-FirstPlayerToken.png"));
+        displayFirstPlayerToken();
     }
 
     public void updateScore() {
@@ -98,10 +106,12 @@ public class Player {
     public void startTurn() {
         updateGUIButtons();
         displayFirstPlayerToken();
+        updateSettlementsRemaining();
     }
 
     public void addActionTile(ActionTile actionTile) {
         actionTileList.add(actionTile);
+        actionTile.setNew(true);
         updateGUIButtons();
     }
 
@@ -163,20 +173,48 @@ public class Player {
 
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
-
-            addActionTiles.setOnAction(e -> {
-                if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0){
-                    gui.setCancelButtonDisable(false);
-                    usedActionTile = true;
-                    tileObj.setActive(true);
-                }
-            });
+            if (!tile.getNew())
+                addActionTiles.setOnAction(e -> {
+                    if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0){
+                        gui.setCancelButtonDisable(false);
+                        usedActionTile = true;
+                        tileObj.setActive(true);
+                    }
+                });
             moveSelectionList.add(addActionTiles);
         }
     }
+    
+    public void updateSettlementsRemaining() {
+    	if(settlementAmountGroup == null) {
+    		settlementAmountGroup = new Group();
+    		ObjectHandler.get().add(settlementAmountGroup);
+    	}
+    	settlementAmountGroup.getChildren().clear();
+    	
+    	ImageView settlementObj = new ImageView(settlementIcon);
+    	settlementObj.setLayoutX(160);
+    	settlementObj.setLayoutY(780);
+    	settlementObj.setFitWidth(settlementIcon.getWidth() / 7);
+    	settlementObj.setFitHeight(settlementIcon.getHeight() / 7);
+    	
+    	settlementAmountGroup.getChildren().add(settlementObj);
+    	Label playerLabel = new Label("x " + settlementNum);
+		settlementAmountGroup.getChildren().add(playerLabel);
+
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 50);
+		playerLabel.setFont(font);
+		playerLabel.setTextFill(Color.WHITE); 
+		playerLabel.setLayoutX(230);
+		playerLabel.setLayoutY(770);
+		playerLabel.setPrefSize(300, 80);
+    }
 
     public void addSettlement() {settlementNum++;}
-    public void removeSettlement() {settlementNum--;}
+    public void removeSettlement() {
+    	settlementNum--;
+    }
+    
     public void setTurnConfirmed(boolean x){
         turnConfirmed = x;
     }
