@@ -7,14 +7,14 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Rotate;
 
 public class HexButton extends Polygon {
-	private HexNode hexNode;
+    private HexNode hexNode;
     private double radianStep = (2 * Math.PI) / 6;
 
     public HexButton(double radius, HexNode hexNode) {
-    	//setOnMouseClicked(e -> {});
-    	this.hexNode = hexNode;
+        //setOnMouseClicked(e -> {});
+        this.hexNode = hexNode;
         buildHexagon(radius);
-        
+
         ObjectHandler objectHandler = ObjectHandler.get();
         objectHandler.add(this);
     }
@@ -34,19 +34,18 @@ public class HexButton extends Polygon {
         }
         getTransforms().add(new Rotate(90, 0, 0));
     }
-    
+
     public void setBounds(double x, double y) {
-    	Window window = Window.get();
-		double xMultiplier = window.getWidth() / 1920;
-		double yMultiplier = window.getHeight() / 1080;
-		
-    	setLayoutX(x * xMultiplier);
-		setLayoutY(y * yMultiplier);
+        Window window = Window.get();
+        double xMultiplier = window.getWidth() / 1920;
+        double yMultiplier = window.getHeight() / 1080;
+
+        setLayoutX(x * xMultiplier);
+        setLayoutY(y * yMultiplier);
     }
-    
+
     public HexNode getHexNode() {return hexNode;}
 }
-
 
 
 
