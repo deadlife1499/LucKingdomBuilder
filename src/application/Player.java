@@ -173,7 +173,7 @@ public class Player {
 
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
-            if (!tile.getNew())
+            //if (!tile.getNew())
                 addActionTiles.setOnAction(e -> {
                     if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0){
                         gui.setCancelButtonDisable(false);

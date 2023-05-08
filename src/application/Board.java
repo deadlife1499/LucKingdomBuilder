@@ -357,37 +357,40 @@ public class Board {
 	public void allowAdditionalSettlement(){
 		settlementLimit++;
 	}
+	public void setPlayerSettlementsActive(String type) {
+		if (type.equals("harbor"))
+			harbor=true;
+		if (type.equals("barn"))
+			barn=true;
+		//int removed = 0;
+		tavern = true;
+		HexNode[][] hexMatrix = boardGraph.getMatrix();
+		TurnHandler turnHandler = TurnHandler.get();
+		Player player = turnHandler.getCurrentPlayer();
+		//HexButton button;
+		for(HexButton[] row : buttonMatrix) {
+			for(HexButton hexButton : row) {
+				if(tavernRemoved<1 && hexButton!=null && hexButton.getHexNode()!=null && hexButton.getHexNode().hasSettlement() &&
+						hexButton.getHexNode().getPlayerNum() == player.getPlayerNum()) {
+					hexButton.setVisible(true);
+					System.out.println("its showing");
+					//removed++;
+				}
+			}
+		}
+	}
+	public boolean getTavernDone(){
+		return tavernDone;
+	}
 	private void Harbor(){
-        settlementLimit++;
-        Board.get().getActiveCard().tempActivateCard("w");
-        //System.out.println("harbor - sl " + settlementLimit + " sp " + settlementsPlacedSinceReset);
-    }
-    private void Barn(){
-        settlementLimit++;
-        Board.get().getActiveCard().activateCard();
-    }
-    public void setPlayerSettlementsActive(String type) {
-        if (type.equals("harbor"))
-            harbor=true;
-        if (type.equals("barn"))
-            barn=true;
-        //int removed = 0;
-        tavern = true;
-        HexNode[][] hexMatrix = boardGraph.getMatrix();
-        TurnHandler turnHandler = TurnHandler.get();
-        Player player = turnHandler.getCurrentPlayer();
-        //HexButton button;
-        for(HexButton[] row : buttonMatrix) {
-            for(HexButton hexButton : row) {
-                if(tavernRemoved<1 && hexButton!=null && hexButton.getHexNode()!=null && hexButton.getHexNode().hasSettlement() &&
-                        hexButton.getHexNode().getPlayerNum() == player.getPlayerNum()) {
-                    hexButton.setVisible(true);
-                    System.out.println("its showing");
-                    //removed++;
-                }
-            }
-        }
-    }
+		settlementLimit++;
+		Board.get().getActiveCard().tempActivateCard("w");
+		//System.out.println("harbor - sl " + settlementLimit + " sp " + settlementsPlacedSinceReset);
+	}
+	private void Barn(){
+		settlementLimit++;
+		Board.get().getActiveCard().activateCard();
+	}
 }
 
 

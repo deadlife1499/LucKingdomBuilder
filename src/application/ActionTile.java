@@ -144,6 +144,7 @@ public class ActionTile {
                     } else {
                         ((Barn)child).deactivate();
                     }
+                    break;
                 case "farm":
                     if(active) {
                         ((Farm)child).activate();
