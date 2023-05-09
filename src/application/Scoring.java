@@ -51,10 +51,9 @@ public class Scoring {
     
     public static int[] getScoreArr() {
     	TurnHandler turnHandler = TurnHandler.get();
-    	int[] scoreArr = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
     	
     	if(scoreArr == null) {
-    		//scoreArr = new int[turnHandler.getPlayerList().size() * 5];
+    		scoreArr = new int[turnHandler.getPlayerList().size() * 5];
     	}
     	
     	//set player scores
