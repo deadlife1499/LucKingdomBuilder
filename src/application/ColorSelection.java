@@ -127,6 +127,10 @@ public class ColorSelection {
 						return;
 					}
 				}
+
+				for(String color : playerColors) {
+					return;
+				}
 				nextButton.setText("Next");
 			});
 			selectionObjects.add(colorButton);

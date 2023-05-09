@@ -232,6 +232,8 @@ public class Board {
 							Barn();
 						}
 					}
+					hexNode.removeSettlement();
+					hexNode.removeAdjacent(true);
 				}
 				else {
 					System.out.println("lmfao got here");
@@ -249,11 +251,11 @@ public class Board {
 							activeCard.activateCard();
 						}
 					}
+					hexNode.removeAdjacent(false);
 				}
 				if(settlementsPlacedSinceReset == 2) {
 					gui.setConfirmButtonDisable(true);
 				}
-				hexNode.removeAdjacent();
 				ArrayList<HexNode> entry = (ArrayList<HexNode>) playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).get(hexNode.getSector());
 				entry.remove(hexNode);
 				//System.out.println(entry.size());
@@ -338,7 +340,7 @@ public class Board {
 			for (int i = 0; i < current.size(); i++) {
 				current.get(i).removeSettlement();
 				entry.remove(current.get(i));
-				current.get(i).removeAdjacent();
+				current.get(i).removeAdjacent(false);
 				//System.out.println(current.size());
 			}
 			//TurnHandler.get().getCurrentPlayer().setSettlementNum(TurnHandler.get().getCurrentPlayer().getSettlementNum()-9);

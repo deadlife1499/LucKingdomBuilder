@@ -159,7 +159,7 @@ public class Player {
         moveSelectionList.add(addSettlements);
     }
 
-    private void updateActionTiles() {
+    public void updateActionTiles() {
         Iterator<ActionTile> iter = actionTileList.iterator();
 
         while(iter.hasNext()) {
@@ -176,13 +176,13 @@ public class Player {
 
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
-                addActionTiles.setOnAction(e -> {
+            addActionTiles.setOnAction(e -> {
                     //if (!turnConfirmed)
-                        if ((Board.get().getSettlementsPlacedSinceReset()==0 || Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()) && (tile.getNew())){
-                            gui.setCancelButtonDisable(true);
-                            usedActionTile = true;
-                            tileObj.setActive(true);
-                        }
+                if ((Board.get().getSettlementsPlacedSinceReset()==0 || Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()) && (!tile.getNew())){
+                    gui.setCancelButtonDisable(true);
+                    usedActionTile = true;
+                    tileObj.setActive(true);
+                }
                 });
             moveSelectionList.add(addActionTiles);
         }

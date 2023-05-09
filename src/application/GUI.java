@@ -61,12 +61,15 @@ public class GUI {
 					card.deactivateCard();
 					terrainButton = (Button)moveSelectionBox.getChildren().get(0);
 					terrainButton.setDisable(true);
+
 				}
 			}
 			board.confirmPlacement();
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(true);
 			TurnHandler.get().getCurrentPlayer().setScore(TurnHandler.get().getCurrentPlayer().getTempScore());
 			TurnHandler.get().getCurrentPlayer().updateScore();
+			//TurnHandler.get().getCurrentPlayer().updateActionTiles();
+			//TurnHandler.get().getCurrentPlayer().actionTileDisabler();
 		});
 		cancelButton = new GameButton("Cancel");
 		cancelButton.setEffect(new DropShadow(10, Color.BLACK));
@@ -181,13 +184,14 @@ public class GUI {
 		endGameButton.setBackground(null);
 		endGameButton.setBounds(60, 10, 40, 40);
 		
-		endGameButton.setOnAction(e -> {
+		/*endGameButton.setOnAction(e -> {
 			if(endGameGroup.getChildren().isEmpty()) {
 				openEndGameScreen();
 			} else {
 				closeEndGameScreen();
 			}
-		});
+		});*/
+		//openEndGameScreen();
 	}
 
 	public HBox getMoveSelectionBox() {return moveSelectionBox;}

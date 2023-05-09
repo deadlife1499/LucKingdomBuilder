@@ -60,7 +60,7 @@ public class HexNode {
         }
     }
 
-    public void removeAdjacent() {
+    public void removeAdjacent(boolean returnActionTile) {
         HexNode nodeAT = null;
 
         for(HexNode node : bordering) {
@@ -84,7 +84,8 @@ public class HexNode {
             return;
         }
         if (nodeAT!=null) {
-            nodeAT.getActionTile().returnToken();
+            if(!returnActionTile)
+                nodeAT.getActionTile().returnToken();
             player.removeActionTile(nodeAT.getActionTile());
         }
     }

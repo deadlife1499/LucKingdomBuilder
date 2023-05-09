@@ -40,7 +40,7 @@ public class Scoring {
         int score = 0;
         for(Entry<String, Boolean> cardEntry : cardMap.entrySet()) {
             if(cardEntry.getValue()) {
-                score += score(cardEntry.getKey());
+                score += score(cardEntry.getKey(), turnhandler.getCurrentPlayer().getPlayerNum());
             }
         }
         score+= scoreCity();
@@ -51,7 +51,7 @@ public class Scoring {
     
     public static int[] getScoreArr() {
     	TurnHandler turnHandler = TurnHandler.get();
-    	
+
     	if(scoreArr == null) {
     		scoreArr = new int[turnHandler.getPlayerList().size() * 5];
     	}
@@ -72,7 +72,16 @@ public class Scoring {
     	 * rowAmount = turnHandler.getPlayerList().size();
     	 * use GUI.get().openEndGameScreen();
     	 */
-    	return scoreArr;
+        for(int i =0; i<turnHandler.getPlayerList().size(); i++){
+            int pNum = i;
+            for(int c = 0; c<5; c++){
+                for(String z : cardMap.keySet())
+                    if(cardMap.get(z))
+                        scoreArr[i]= score(z, pNum);
+            }
+        }
+        int[] hello = new int[10];
+    	return hello;
     }
 
     private static void buildMap() {
@@ -110,9 +119,9 @@ public class Scoring {
         //playerNum = player.getPlayerNum();
     }
 
-    private static int score(String cardName) {
+    private static int score(String cardName, int pNum) {
         int score = 0;
-        playerNum = TurnHandler.get().getCurrentPlayer().getPlayerNum();
+        playerNum = pNum;
         switch(cardName) {
             case "citizen":
                 score += scoreCitizen(hexMatrix);
@@ -293,6 +302,7 @@ public class Scoring {
         return least*3;
     }
     private static int scoreKnight(HexNode[][] hexMatrix){
+        //playerNum = TurnHandler.get().getCurrentPlayer().getPlayerNum();
         int highest = -1;
         for(int i =0; i<20; i++){
             int z = knightHelper(hexMatrix[i][0]);
@@ -304,8 +314,10 @@ public class Scoring {
     private static int knightHelper(HexNode root){
         if(root==null)
             return 0;
-        if(root.getNum()==playerNum)
+        if(root.getNum()==playerNum) {
+            //System.out.println("ran");
             return 1 + knightHelper(root.getBordering(1));
+        }
         return knightHelper(root.getBordering(1));
     }
     private static int scoreLord(){
@@ -377,15 +389,20 @@ public class Scoring {
     
     private static int scoreCity(){
         int points =0;
+        //boolean check = false;
+        //playerNum = TurnHandler.get().getCurrentPlayer().getPlayerNum();
+        HashSet<HexNode> set = new HashSet<>();
         for(ArrayList<HexNode> list : Board.get().getPlayerMaps().get(playerNum).values()){
             for (HexNode z : list){
                 for (HexNode k : z.getBordering()){
                     if (k!=null && k.getTerrain().equals("ci")){
-                        points+=3;
+                        set.add(k);
                     }
                 }
             }
         }
+        points+=set.size()*3;
+        //System.out.println("set size " + set.size());
         return points;
     }
     public static HashMap<String, Boolean> getCardMap() {
