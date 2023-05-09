@@ -1,12 +1,15 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
@@ -28,6 +31,7 @@ public class GUI {
 	private static GUI gui;
 	private Group playerStatsGroup;
 	private ArrayList<Player> playerList;
+	private Group endGameGroup;
 
 	public GUI() {
 		Image backgroundImage = new Image(getClass().getResourceAsStream("/images/KB-MainBackground.png"));
@@ -163,6 +167,7 @@ public class GUI {
 		Scoring.scoreCards();
 		updatePlayerStats();
 		player.updateSettlementsRemaining();
+		openEndGameScreen();
 	}
 
 	public HBox getMoveSelectionBox() {return moveSelectionBox;}
@@ -238,6 +243,48 @@ public class GUI {
 			GUI.gui = new GUI();
 		}
 		return GUI.gui;
+	}
+	public void openEndGameScreen() {
+		if(endGameGroup == null) {
+			endGameGroup = new Group();
+			ObjectHandler.get().add(endGameGroup);
+		}
+		Image backgroundImg = new Image(getClass().getResourceAsStream("/images/BackgroundPlaceholder.png"));
+		ImageView background = new ImageView(backgroundImg);
+		background.setEffect(new DropShadow(10, Color.BLACK));
+
+		background.setLayoutX(300);
+		background.setLayoutY(200);
+		background.setFitWidth(1320);
+		background.setFitHeight(680);
+
+		endGameGroup.getChildren().add(background);
+		HashMap<String, Boolean> cardMap = Scoring.getCardMap();
+
+		int cardX = 450;
+		int playerY = 450;
+
+		for(Map.Entry<String, Boolean> cardEntry : cardMap.entrySet()) {
+			if(cardEntry.getValue()) {
+				Image cardImg = new Image("/images/" + cardEntry.getKey() + "Objective.png");
+				ImageView cardObj = new ImageView();
+				cardObj.setEffect(new DropShadow(10, Color.BLACK));
+
+				cardObj.setImage(cardImg);
+				cardObj.setLayoutX(cardX);
+				cardObj.setLayoutY(250);
+				cardObj.setFitWidth(cardImg.getWidth() / 2);
+				cardObj.setFitHeight(cardImg.getHeight() / 2);
+
+				endGameGroup.getChildren().add(cardObj);
+				cardX += 250;
+				playerY += 60;
+			}
+		}
+	}
+
+	public void closeEndGameScreen() {
+		endGameGroup.getChildren().clear();
 	}
 }
 

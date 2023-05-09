@@ -361,4 +361,7 @@ public class Scoring {
         }
         return points;
     }
+    public static HashMap<String, Boolean> getCardMap() {
+        return cardMap;
+    }
 }

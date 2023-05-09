@@ -176,8 +176,8 @@ public class Player {
             addActionTiles.setGraphic(tileImg);
                 addActionTiles.setOnAction(e -> {
                     //if (!turnConfirmed)
-                        if ((Board.get().getSettlementsPlacedSinceReset()==0 || Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()) && (!tile.getNew())){
-                            gui.setCancelButtonDisable(false);
+                        if ((Board.get().getSettlementsPlacedSinceReset()==0 || Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()) && (tile.getNew())){
+                            gui.setCancelButtonDisable(true);
                             usedActionTile = true;
                             tileObj.setActive(true);
                         }
