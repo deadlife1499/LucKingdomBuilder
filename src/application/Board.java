@@ -97,7 +97,8 @@ public class Board {
 		for(int i = 0; i<4; i++) {
 			String[][] tempArr = new String[10][10];
 			InputStream board = Main.class.getResourceAsStream("/boards/board" + boardNums[i] + ".txt");
-			Scanner sc = null;
+			assert board != null;
+			Scanner sc = new Scanner(board);
 
 			for(int r = 0; r < tempArr.length; r++) {
 				for(int c = 0; c < tempArr[0].length; c++) {
@@ -231,11 +232,14 @@ public class Board {
 						}
 					}
 				}
-				else if(!tavern){
+				else {
+					System.out.println("lmfao got here");
 					settlementObj.removePreviousImages(1);
 					settlementsPlacedSinceReset--;
 					settlementQueue.remove(hexNode);
+					current.remove(hexNode);
 					//
+					hexNode.removeSettlement();
 					if(activeCard.isActive()) {
 						if (activeCard.isTempActive())
 							activeCard.reactivate();
@@ -245,12 +249,10 @@ public class Board {
 						}
 					}
 				}
-				hexNode.removeSettlement();
 				if(settlementsPlacedSinceReset == 2) {
 					gui.setConfirmButtonDisable(true);
 				}
 				hexNode.removeAdjacent();
-				current.remove(hexNode);
 				ArrayList<HexNode> entry = (ArrayList<HexNode>) playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).get(hexNode.getSector());
 				entry.remove(hexNode);
 				//System.out.println(entry.size());
@@ -329,21 +331,22 @@ public class Board {
 		current = new ArrayList<>();
 	}
 	public void cancelPlacement(){
+		System.out.println("CURRENT SIZE " + current.size());
 		for(int j = 0; j<4; j++) {
 			ArrayList<HexNode> entry = (ArrayList<HexNode>) playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).get(j);
 			for (int i = 0; i < current.size(); i++) {
 				current.get(i).removeSettlement();
 				entry.remove(current.get(i));
 				current.get(i).removeAdjacent();
+				//System.out.println(current.size());
 			}
+			//TurnHandler.get().getCurrentPlayer().setSettlementNum(TurnHandler.get().getCurrentPlayer().getSettlementNum()-9);
 			playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).put(j, entry);
 		}
 		current = new ArrayList<>();
 		settlementLimit=3;
 		settlementsPlacedSinceReset=0;
-		for (int i =0; i<9; i++){
-			TurnHandler.get().getCurrentPlayer().removeSettlement();
-		}
+		TurnHandler.get().getCurrentPlayer().setSettlementNum(TurnHandler.get().getCurrentPlayer().getSettlementNum()-9);
 		TurnHandler.get().getCurrentPlayer().updateSettlementsRemaining();
 	}
 	public TreeMap<Integer, ArrayList<HexNode>> getPlayerMap(int x){

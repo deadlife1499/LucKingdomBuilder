@@ -3,6 +3,7 @@ package application;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -24,7 +25,7 @@ public class ColorSelection {
 
 	public ColorSelection(int playerAmount) {
 		//setStyle("-fx-background-color: " + Color.COLOR.getValue());
-		AnimationClass.FadeScreenIn(new GameObject(new Image(getClass().getResourceAsStream("/images/KB-ColorSelectionScreen.png")), 0, 0, 1920, 1080, 0));
+		AnimationClass.FadeScreenIn(new GameObject(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/KB-ColorSelectionScreen.png"))), 0, 0, 1920, 1080, 0));
 		selectionObjects = new HashSet<>();
 		playerColors = new String[playerAmount];
 		for(int i = 0; i < playerAmount; i++) {
@@ -58,9 +59,9 @@ public class ColorSelection {
 		nextButton.setBounds(1670, 980, 200, 50);
 
 		nextButton.setOnAction(e -> {
-			if(!nextButton.getText().equals("[Next]")) {
+			if(!nextButton.getText().equals("Next")) {
 				for(int i = 0; i < playerAmount; i++) {
-					if(playerColors[i] == "") {
+					if(playerColors[i].equals("")) {
 						String newColor = settlementColors[(int)(Math.random() * 8)];
 
 						while(Arrays.asList(playerColors).contains(newColor)) {

@@ -76,7 +76,7 @@ public class Player {
 
         scoreLabel = new Label("Score: ");
         
-        Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 50);
+        Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 50);
         scoreLabel.setFont(font);
 		scoreLabel.setTextFill(Color.WHITE); 
         scoreLabel.setVisible(true);
@@ -107,6 +107,7 @@ public class Player {
         updateGUIButtons();
         displayFirstPlayerToken();
         updateSettlementsRemaining();
+        turnConfirmed = false;
     }
 
     public void addActionTile(ActionTile actionTile) {
@@ -174,11 +175,12 @@ public class Player {
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
                 addActionTiles.setOnAction(e -> {
-                    if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0 && (!tile.getNew())){
-                        gui.setCancelButtonDisable(false);
-                        usedActionTile = true;
-                        tileObj.setActive(true);
-                    }
+                    //if (!turnConfirmed)
+                        if ((Board.get().getSettlementsPlacedSinceReset()==0 || Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()) && (!tile.getNew())){
+                            gui.setCancelButtonDisable(false);
+                            usedActionTile = true;
+                            tileObj.setActive(true);
+                        }
                 });
             moveSelectionList.add(addActionTiles);
         }
@@ -201,7 +203,7 @@ public class Player {
     	Label playerLabel = new Label("x " + settlementNum);
 		settlementAmountGroup.getChildren().add(playerLabel);
 
-		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 50);
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 50);
 		playerLabel.setFont(font);
 		playerLabel.setTextFill(Color.WHITE); 
 		playerLabel.setLayoutX(230);
@@ -233,6 +235,9 @@ public class Player {
         for(int i =0; i<actionTileList.size();i++){
             actionTileList.get(i).setNew(false);
         }
+    }
+    public void setSettlementNum(int n){
+        settlementNum = n;
     }
 }
 

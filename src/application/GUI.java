@@ -51,7 +51,6 @@ public class GUI {
 
 		confirmButton.setOnAction(e -> {
 			if(board.getSettlementsPlacedSinceReset() == board.getSettlementLimit()) {
-				board.resetSettlementsPlaced();
 
 				setConfirmButtonDisable(true);
 				setCancelButtonDisable(true);
@@ -103,6 +102,7 @@ public class GUI {
 		nextTurnButton.setBounds(138, 700, 200, 75);
 
 		nextTurnButton.setOnAction(e -> {
+			board.resetSettlementsPlaced();
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);
 			TurnHandler turnHandler = TurnHandler.get();
 			turnHandler.getCurrentPlayer().hideScore();
