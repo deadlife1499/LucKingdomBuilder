@@ -173,9 +173,8 @@ public class Player {
 
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
-            //if (!tile.getNew())
                 addActionTiles.setOnAction(e -> {
-                    if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0){
+                    if (Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit() || Board.get().getSettlementsPlacedSinceReset()==0 && (!tile.getNew())){
                         gui.setCancelButtonDisable(false);
                         usedActionTile = true;
                         tileObj.setActive(true);
@@ -229,6 +228,11 @@ public class Player {
     }
     public boolean isUsedActionTile(){
         return usedActionTile;
+    }
+    public void activateActionTiles(){
+        for(int i =0; i<actionTileList.size();i++){
+            actionTileList.get(i).setNew(false);
+        }
     }
 }
 

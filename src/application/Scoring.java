@@ -50,7 +50,7 @@ public class Scoring {
 
     private static void buildMap() {
         cardMap = new HashMap<>();
-        String[] cardNames = {"citizen", "discoverer", "fisherman", "miner", "worker", "farmer", "knight", "lord"};
+        String[] cardNames = {"citizen", "discoverer", "fisherman", "miner", "worker", "farmer", "knight"};//, "lord"};
 
         for(String cardName : cardNames) {
             cardMap.put(cardName, false);
@@ -353,7 +353,7 @@ public class Scoring {
         for(ArrayList<HexNode> list : Board.get().getPlayerMaps().get(playerNum).values()){
             for (HexNode z : list){
                 for (HexNode k : z.getBordering()){
-                    if (k!=null && k.getTerrain().equals("s")){
+                    if (k!=null && k.getTerrain().equals("ci")){
                         points+=3;
                     }
                 }

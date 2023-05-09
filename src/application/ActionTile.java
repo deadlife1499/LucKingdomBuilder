@@ -1,6 +1,7 @@
 package application;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -100,10 +101,10 @@ public class ActionTile {
         private ActionTileTemplate child;
         private GameObject actionTileObj;
 
-        private ActionTileTemplate(String type) {
+        public ActionTileTemplate(String type) {
             this.type = type;
-            locationImage = new Image(getClass().getResourceAsStream("/images/KB-Location-" + type + ".png"));
-            tileImage = new Image(getClass().getResourceAsStream("/images/KB-" + type + ".png"));
+            locationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/KB-Location-" + type.substring(0, 1).toUpperCase() + type.substring(1) + ".png")));
+            tileImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/KB-" + type + ".png")));
             actionTileObj = new GameObject();
 
             double tileWidth = (width - 31 * (width / 1152)) / 19;

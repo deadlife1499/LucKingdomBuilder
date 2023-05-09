@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 
 import javafx.animation.Animation;
@@ -79,11 +80,11 @@ public class Board {
 	private void displayBoard(double x, double y, double width, double height){
 		//354, 14, 1212, 1041
 		//620 x 528
-		Image backImg = new Image(getClass().getResourceAsStream("/images/BlackSquare.png"));
+		Image backImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/BlackSquare.png")));
 		GameObject obj = new GameObject(backImg, x + 30, 30, 1151, 1008, 1);
 
 		for(int i = 0; i < 4; i++) {
-			Image boardImg = new Image(getClass().getResourceAsStream("/images/board" + boardNums[i] + ".png"));
+			Image boardImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/Board" + boardNums[i] + ".png")));
 			obj.add(boardImg, x + 591.2 * (i % 2), y + 512.5 * (i / 2), 620, 528);
 		}
 		obj.setEffect(new DropShadow(10, Color.BLACK));
@@ -95,14 +96,8 @@ public class Board {
 
 		for(int i = 0; i<4; i++) {
 			String[][] tempArr = new String[10][10];
-			File board = new File("src/boards/board" + boardNums[i] + ".txt");
+			InputStream board = Main.class.getResourceAsStream("/boards/board" + boardNums[i] + ".txt");
 			Scanner sc = null;
-
-			try {
-				sc = new Scanner(board);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
 
 			for(int r = 0; r < tempArr.length; r++) {
 				for(int c = 0; c < tempArr[0].length; c++) {
@@ -216,6 +211,7 @@ public class Board {
 				Scoring.scoreCards();
 				System.out.println("sr " + settlementsPlacedSinceReset );
 				System.out.println("sl " + settlementLimit);
+				player.updateSettlementsRemaining();
 			} else if(!AnimationClass.getActive()){
 				//System.out.println(tavern);
 				if(tavern){
@@ -260,6 +256,7 @@ public class Board {
 				//System.out.println(entry.size());
 				playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).put(hexNode.getSector(), entry);
 				Scoring.scoreCards();
+				TurnHandler.get().getCurrentPlayer().updateSettlementsRemaining();
 			}
 			//System.out.println(hexMatrix[0][0].toPlayerString());
 		});
@@ -344,6 +341,10 @@ public class Board {
 		current = new ArrayList<>();
 		settlementLimit=3;
 		settlementsPlacedSinceReset=0;
+		for (int i =0; i<9; i++){
+			TurnHandler.get().getCurrentPlayer().removeSettlement();
+		}
+		TurnHandler.get().getCurrentPlayer().updateSettlementsRemaining();
 	}
 	public TreeMap<Integer, ArrayList<HexNode>> getPlayerMap(int x){
 		return playerMaps.get(x);

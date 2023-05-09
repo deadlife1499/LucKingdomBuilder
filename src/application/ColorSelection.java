@@ -36,7 +36,7 @@ public class ColorSelection {
 
 		for(int i = 0; i < playerAmount; i++) {
 			GameButton button = new GameButton("Click to select color");
-			Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 20);
+			Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 20);
 			button.setFont(font);
 			button.setBounds(1300, 56 + 256 * i, 200, 200);
 
@@ -50,7 +50,7 @@ public class ColorSelection {
 			});
 			mainButtons[i] = button;
 		}
-		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 20);
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 20);
 		nextButton.setFont(font);
 		nextButton.setTextFill(Color.WHITE);
 		nextButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(5), new BorderWidths(5))));
@@ -127,7 +127,7 @@ public class ColorSelection {
 			selectionObjects.add(colorButton);
 		}
 		GameButton colorButton = new GameButton("Back");
-		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 50);
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 50);
 		colorButton.setFont(font);
 		//colorButton.setBounds(xOffset + 155 , yOffset + 215, 100, 100);
 		colorButton.setBounds(570 + 200, 590 + 75, 250, 250);

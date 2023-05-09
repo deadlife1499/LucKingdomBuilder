@@ -20,7 +20,7 @@ public class StartScreen {
 		GameObject y = new GameObject(logo, 640, 30, 290, 256, 1);
 
 		GameButton startButton = new GameButton("Play");
-		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 40);
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 40);
 		startButton.setFont(font);
 		startButton.setTextFill(Color.WHITE);
 		startButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));

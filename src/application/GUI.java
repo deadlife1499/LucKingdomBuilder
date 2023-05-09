@@ -42,7 +42,7 @@ public class GUI {
 		
 		Board board = Board.get();
 		confirmButton = new GameButton("Confirm");
-		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 32);
+		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 32);
 		confirmButton.setFont(font);
 		confirmButton.setTextFill(Color.WHITE); 
 		confirmButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));
@@ -110,6 +110,7 @@ public class GUI {
 			setNextButtonDisable(true);
 			turnHandler.getCurrentPlayer().displayScore();
 			//Board.get().getActiveCard().reset();
+			turnHandler.getCurrentPlayer().activateActionTiles();
 		});
 		setNextButtonDisable(true);
 
@@ -126,7 +127,7 @@ public class GUI {
 		TurnHandler turnHandler = TurnHandler.get();
 		playerLabel = new Label("Player " + (turnHandler.getCurrentPlayer().getPlayerNum() + 1));
 
-		font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 70);
+		font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 70);
 		playerLabel.setFont(font);
 		playerLabel.setTextFill(Color.WHITE); 
 		playerLabel.setLayoutX(120);
@@ -191,7 +192,7 @@ public class GUI {
 			Label playerLabel = new Label("Player " + (playerList.get(i).getPlayerNum() + 1));
 			playerStatsGroup.getChildren().add(playerLabel);
 
-			Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 20);
+			Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 20);
 			playerLabel.setFont(font);
 			playerLabel.setTextFill(Color.WHITE); 
 			playerLabel.setLayoutX(60);
@@ -210,7 +211,7 @@ public class GUI {
 			Label settlementNumLabel = new Label("x " + playerList.get(i).getSettlementNum());
 			playerStatsGroup.getChildren().add(settlementNumLabel);
 
-			font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.TTF"), 40);
+			font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 40);
 			settlementNumLabel.setFont(font);
 			settlementNumLabel.setTextFill(Color.WHITE); 
 			settlementNumLabel.setLayoutX(125);
