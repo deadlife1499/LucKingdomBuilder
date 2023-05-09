@@ -17,6 +17,7 @@ public class Scoring {
     private static ArrayList<TreeMap<Integer, ArrayList<HexNode>>> playerMaps;
     private static TreeMap<Integer, ArrayList<HexNode>> currentPlayerMap;
     private static int playerNum;
+    private static int[] scoreArr;
 
     @SuppressWarnings("unchecked")
     public static void scoreCards() {
@@ -46,6 +47,33 @@ public class Scoring {
         player.setTempScore(score);
         player.updateScore();
 
+    }
+    
+    public static int[] getScoreArr() {
+    	TurnHandler turnHandler = TurnHandler.get();
+    	int[] scoreArr = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
+    	
+    	if(scoreArr == null) {
+    		//scoreArr = new int[turnHandler.getPlayerList().size() * 5];
+    	}
+    	
+    	//set player scores
+    	
+    	/*          
+    	 * player 1: [card 1] [card 2] [card 3] [city score] [total]
+    	 * player 2: [card 1] [card 2] [card 3] [city score] [total]
+    	 * player 3: [card 1] [card 2] [card 3] [city score] [total]
+    	 * player 4: [card 1] [card 2] [card 3] [city score] [total]
+    	 * 
+    	 * 0 4 8 12 16
+    	 * 1 5 9 13 17
+    	 * 2 6 10 14 18
+    	 * 3 7 11 15 19
+    	 * 
+    	 * rowAmount = turnHandler.getPlayerList().size();
+    	 * use GUI.get().openEndGameScreen();
+    	 */
+    	return scoreArr;
     }
 
     private static void buildMap() {

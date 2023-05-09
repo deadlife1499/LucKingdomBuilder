@@ -83,10 +83,10 @@ public class AnimationClass {
         iHateBlacks.play();
         //iHateWhites.play();
     }
-    public static void rotateOnPivotPoint(int pivotX, int pivotY, int rotationAngle, Node node) {
+    public static void rotate(int rotationAngle, Node node) {
         RotateTransition rotate = new RotateTransition();
-        Point3D point = new Point3D(pivotX, pivotY, 0);
-        rotate.setAxis(point);
+        
+        rotate.setAxis(Rotate.Z_AXIS);
         rotate.setByAngle(rotationAngle);
         rotate.setCycleCount(500);
         rotate.setDuration(Duration.millis(1500));

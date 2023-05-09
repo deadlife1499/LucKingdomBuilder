@@ -75,6 +75,7 @@ public class Player {
         ObjectHandler objectHandler = ObjectHandler.get();
 
         scoreLabel = new Label("Score: ");
+        scoreLabel.setEffect(new DropShadow(10, Color.BLACK));
         
         Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 50);
         scoreLabel.setFont(font);
@@ -138,6 +139,7 @@ public class Player {
         Button addSettlements = new Button();
 
         ImageView settlementImg = new ImageView(settlementIcon);
+        settlementImg.setEffect(new DropShadow(10, Color.BLACK));
         settlementImg.setFitHeight(52);
         settlementImg.setPreserveRatio(true);
 
@@ -194,6 +196,7 @@ public class Player {
     	settlementAmountGroup.getChildren().clear();
     	
     	ImageView settlementObj = new ImageView(settlementIcon);
+    	settlementObj.setEffect(new DropShadow(10, Color.BLACK));
     	settlementObj.setLayoutX(160);
     	settlementObj.setLayoutY(780);
     	settlementObj.setFitWidth(settlementIcon.getWidth() / 7);
@@ -201,6 +204,7 @@ public class Player {
     	
     	settlementAmountGroup.getChildren().add(settlementObj);
     	Label playerLabel = new Label("x " + settlementNum);
+    	playerLabel.setEffect(new DropShadow(10, Color.BLACK));
 		settlementAmountGroup.getChildren().add(playerLabel);
 
 		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 50);

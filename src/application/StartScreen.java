@@ -1,5 +1,6 @@
 package application;
 
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -17,9 +18,16 @@ public class StartScreen {
 		Image background = new Image(getClass().getResourceAsStream("/images/KB-StartScreen.png"));
 		GameObject z = new GameObject(background, 0, 0, 1920, 1080, 0);
 		Image logo = new Image(getClass().getResourceAsStream("/images/KB-Logo.png"));
-		GameObject y = new GameObject(logo, 640, 30, 290, 256, 1);
+		GameObject y = new GameObject(logo, 640, 30, 290, 256, 3);
+		y.setEffect(new DropShadow(10, Color.BLACK));
+		
+		Image axeImage = new Image(getClass().getResourceAsStream("/images/BackgroundAxe.png"));
+		AnimationClass.rotate(31, new GameObject(axeImage, 578, 175, 414, 808, 2));
+		Image swordImage = new Image(getClass().getResourceAsStream("/images/BackgroundSword.png"));
+		AnimationClass.rotate(-31, new GameObject(swordImage, 962, 225, 276, 656, 2));
 
 		GameButton startButton = new GameButton("Play");
+		startButton.setEffect(new DropShadow(10, Color.BLACK));
 		Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 40);
 		startButton.setFont(font);
 		startButton.setTextFill(Color.WHITE);
@@ -27,9 +35,8 @@ public class StartScreen {
 		startButton.setBackground(null);
 		startButton.setBounds(985, 80, 200, 85);
 
-
-
 		GameButton playerAmountButton = new GameButton("Players: " + playerAmount);
+		playerAmountButton.setEffect(new DropShadow(10, Color.BLACK));
 		playerAmountButton.setFont(font);
 		playerAmountButton.setTextFill(Color.WHITE);
 		playerAmountButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(7), new BorderWidths(7))));

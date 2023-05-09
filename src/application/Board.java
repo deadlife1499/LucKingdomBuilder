@@ -38,6 +38,7 @@ public class Board {
 		settlementQueue = new ArrayList<>();
 		terrainCards = new ArrayList<>();
 		terrainCardObj = new GameObject();
+		terrainCardObj.setEffect(new DropShadow(10, Color.BLACK));
 		terrainCardObj.setBounds(180, 290, 117, 180);
 		tavernRemoved = 0;
 

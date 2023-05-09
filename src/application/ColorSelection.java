@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import javafx.scene.Node;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -34,9 +35,11 @@ public class ColorSelection {
 
 		mainButtons = new GameButton[playerAmount];
 		nextButton = new GameButton("Use random colors");
+		nextButton.setEffect(new DropShadow(10, Color.BLACK));
 
 		for(int i = 0; i < playerAmount; i++) {
 			GameButton button = new GameButton("Click to select color");
+			button.setEffect(new DropShadow(10, Color.BLACK));
 			Font font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 20);
 			button.setFont(font);
 			button.setBounds(1300, 56 + 256 * i, 200, 200);
@@ -88,6 +91,7 @@ public class ColorSelection {
 
 	private void openColorSelection(GameButton button, double xOffset, double yOffset) {
 		GameButton selectionBackground = new GameButton();
+		selectionBackground.setEffect(new DropShadow(10, Color.BLACK));
 		//selectionBackground.setBounds(xOffset - 60, yOffset, 320, 320);
 		selectionBackground.setBounds(25 + 200, 45 + 75, 810, 810);
 		selectionBackground.setStyle("-fx-background-color: " + "#" + Color.BLACK.toString().substring(2));
