@@ -50,21 +50,15 @@ public class StartScreen {
 			}
 			playerAmountButton.setText("Players: " + playerAmount);
 		});
-		AnimationClass.FadeScreen(z);
-		AnimationClass.FadeScreen(y);
-		AnimationClass.FadeScreen(startButton);
-		AnimationClass.FadeScreen(playerAmountButton);
+		AnimationClass.FadeScreenOut();
 
 		startButton.setOnMouseReleased(e -> {
-			ObjectHandler objectHandler = ObjectHandler.get();
-			objectHandler.clear();
-
-			ColorSelection n = new ColorSelection(playerAmount);
-			//AnimationClass.FadeScreenTransition();
-			AnimationClass.FadeScreenOut(y);
-			AnimationClass.FadeScreenOut(z);
-			AnimationClass.FadeScreenOut(startButton);
-			AnimationClass.FadeScreenOut(playerAmountButton);
+			AnimationClass.FadeScreenIn(action -> {
+				ObjectHandler objectHandler = ObjectHandler.get();
+				objectHandler.clear();
+				
+				ColorSelection n = new ColorSelection(playerAmount);
+			});
 		});
 	}
 

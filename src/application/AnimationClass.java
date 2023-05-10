@@ -1,19 +1,21 @@
 package application;
 
-import javafx.animation.*;
-import javafx.geometry.Point3D;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.*;
-import javafx.scene.transform.*;
-import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
-import javax.swing.*;
-import java.awt.*;
-import java.beans.EventHandler;
-
-public class AnimationClass {
+public class AnimationClass implements EventHandler<ActionEvent> {
     private static boolean active;
     public AnimationClass(){}
     public static void SettlementFadeScale(double Duration, javafx.scene.Node n, javafx.scene.image.Image settlement, double x1, double y1, double width1){
@@ -41,58 +43,121 @@ public class AnimationClass {
     public static boolean getActive(){
         return active;
     }
-    public static void FadeScreen(Node node){
+    
+    @SuppressWarnings("unchecked")
+	public static void FadeScreenIn(){
         Rectangle rectangle = new Rectangle();
         rectangle.setFill(Color.BLACK);
         rectangle.setHeight(1080);
         rectangle.setWidth(1920);
         rectangle.setX(0);
         rectangle.setY(0);
+        
         ObjectHandler.get().add(rectangle);
-        FadeTransition iHateBlacks = new FadeTransition(Duration.seconds(1), rectangle);
-        iHateBlacks.setInterpolator(Interpolator.LINEAR);
-        iHateBlacks.setFromValue(.9);
-        iHateBlacks.setToValue(0);
-        iHateBlacks.play();
-        iHateBlacks.setOnFinished(e -> {
-            rectangle.setDisable(true);
-            ObjectHandler.get().remove(rectangle);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), rectangle);
+        
+        fadeIn.setFromValue(0);  
+        fadeIn.setToValue(1); 
+        
+        
+        fadeIn.setOnFinished(action -> {
+        	rectangle.setVisible(false);
+        	ObjectHandler.get().remove(rectangle);
         });
+        
+        fadeIn.setOnFinished(action -> {
+        	rectangle.setVisible(false);
+        	ObjectHandler.get().remove(rectangle);
+        });
+        
+        fadeIn.play();
     }
-    public static void FadeScreenOut(Node start){
-        FadeTransition iHateBlacks = new FadeTransition(Duration.seconds(1), start);
-        //FadeTransition iHateWhites = new FadeTransition(Duration.seconds(1), end);
-        iHateBlacks.setInterpolator(Interpolator.LINEAR);
-        //iHateWhites.setInterpolator(Interpolator.LINEAR);
-        iHateBlacks.setFromValue(1);
-        //iHateWhites.setFromValue(0);
-        iHateBlacks.setToValue(0);
-        //iHateWhites.setToValue(1);
-        iHateBlacks.play();
-        //iHateWhites.play();
+    
+    @SuppressWarnings("unchecked")
+	public static void FadeScreenIn(EventHandler<ActionEvent> e){
+        Rectangle rectangle = new Rectangle();
+        rectangle.setFill(Color.BLACK);
+        rectangle.setHeight(1080);
+        rectangle.setWidth(1920);
+        rectangle.setX(0);
+        rectangle.setY(0);
+        
+        ObjectHandler.get().add(rectangle);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), rectangle);
+        
+        fadeIn.setFromValue(0);  
+        fadeIn.setToValue(1); 
+        
+        fadeIn.setOnFinished(action -> {
+        	rectangle.setVisible(false);
+        	ObjectHandler.get().remove(rectangle);
+        	e.handle(action);
+        });
+        
+        fadeIn.play();
     }
-    public static void FadeScreenIn(Node start){
-        FadeTransition iHateBlacks = new FadeTransition(Duration.seconds(1), start);
-        //FadeTransition iHateWhites = new FadeTransition(Duration.seconds(1), end);
-        iHateBlacks.setInterpolator(Interpolator.LINEAR);
-        //iHateWhites.setInterpolator(Interpolator.LINEAR);
-        iHateBlacks.setFromValue(0);
-        //iHateWhites.setFromValue(0);
-        iHateBlacks.setToValue(1);
-        //iHateWhites.setToValue(1);
-        iHateBlacks.play();
-        //iHateWhites.play();
+    
+    @SuppressWarnings("unchecked")
+	public static void FadeScreenOut(){
+        Rectangle rectangle = new Rectangle();
+        rectangle.setFill(Color.BLACK);
+        rectangle.setHeight(1080);
+        rectangle.setWidth(1920);
+        rectangle.setX(0);
+        rectangle.setY(0);
+        
+        ObjectHandler.get().add(rectangle);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), rectangle);
+        
+        fadeIn.setFromValue(1);  
+        fadeIn.setToValue(0); 
+        
+        fadeIn.setOnFinished(action -> {
+        	rectangle.setVisible(false);
+        	ObjectHandler.get().remove(rectangle);
+        });
+        
+        fadeIn.play();
     }
+    
+    @SuppressWarnings("unchecked")
+	public static void FadeScreenOut(EventHandler<ActionEvent> e){
+        Rectangle rectangle = new Rectangle();
+        rectangle.setFill(Color.BLACK);
+        rectangle.setHeight(1080);
+        rectangle.setWidth(1920);
+        rectangle.setX(0);
+        rectangle.setY(0);
+        
+        ObjectHandler.get().add(rectangle);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), rectangle);
+        
+        fadeIn.setFromValue(1);  
+        fadeIn.setToValue(0); 
+        
+        fadeIn.setOnFinished(action -> {
+        	rectangle.setVisible(false);
+        	ObjectHandler.get().remove(rectangle);
+        	e.handle(action);
+        });
+        
+        fadeIn.play();
+    }
+    
     public static void rotate(int rotationAngle, Node node) {
         RotateTransition rotate = new RotateTransition();
         
         rotate.setAxis(Rotate.Z_AXIS);
         rotate.setByAngle(rotationAngle);
-        rotate.setCycleCount(500);
+        rotate.setCycleCount(50000);
         rotate.setDuration(Duration.millis(1500));
         rotate.setAutoReverse(true);
         rotate.setNode(node);
         rotate.play();
     }
-
+    
+	@Override
+	public void handle(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+	}
 }

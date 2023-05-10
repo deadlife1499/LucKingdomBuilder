@@ -10,11 +10,13 @@ public class TerrainCard {
     private boolean isActive;
     private boolean isTempActive;
     private String tempString;
+    private boolean isUsed;
 
     public TerrainCard(int type) {
         isActive = false;
         terrainToken = createToken(type);
         tempString = "";
+        isUsed = false;
     }
 
     private String createToken(int type) {
@@ -53,11 +55,16 @@ public class TerrainCard {
     public Image getImage() {return cardImage;}
     public String getToken() {return terrainToken;}
     public boolean isActive() {return isActive;}
+    public boolean getIsUsed() {return isUsed;}
+    
+    public void setIsUsed(boolean used) {isUsed = used;}
 
     public void activateCard() {
         Board board = Board.get();
         HexButton[][] buttonMatrix = board.getButtonMatrix();
         HashSet<HexButton> buttonSet = new HashSet<>();
+        
+        board.setSettlementLimit(3);
 
         for(HexButton[] row : buttonMatrix) {
             for(HexButton button : row) {

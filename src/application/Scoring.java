@@ -40,10 +40,10 @@ public class Scoring {
         int score = 0;
         for(Entry<String, Boolean> cardEntry : cardMap.entrySet()) {
             if(cardEntry.getValue()) {
-                score += score(cardEntry.getKey(), turnhandler.getCurrentPlayer().getPlayerNum());
+                score += score(cardEntry.getKey(), player.getPlayerNum());
             }
         }
-        score+= scoreCity();
+        score+= scoreCity(player.getPlayerNum());
         player.setTempScore(score);
         player.updateScore();
 
@@ -72,16 +72,32 @@ public class Scoring {
     	 * rowAmount = turnHandler.getPlayerList().size();
     	 * use GUI.get().openEndGameScreen();
     	 */
-        for(int i =0; i<turnHandler.getPlayerList().size(); i++){
-            int pNum = i;
-            for(int c = 0; c<5; c++){
-                for(String z : cardMap.keySet())
-                    if(cardMap.get(z))
-                        scoreArr[i]= score(z, pNum);
+    	
+    	ArrayList<String> cardArr = new ArrayList<>();
+    	for(Entry<String, Boolean> cardEntry : cardMap.entrySet()) {
+            if(cardEntry.getValue()) {
+            	cardArr.add(cardEntry.getKey());
             }
         }
-        int[] hello = new int[10];
-    	return hello;
+    	
+    	for(int i = 0; i < scoreArr.length; i++) {
+    		if(i / (scoreArr.length / 5) < 3) {
+    			scoreArr[i] = score(cardArr.get(i / (scoreArr.length / 5)), i % (scoreArr.length / 5));
+    		} else if(i / (scoreArr.length / 5) == 3) {
+    			scoreArr[i] = scoreCity(i % (scoreArr.length / 5));
+    		} else {
+    			int total = 0;
+    			
+    			for(String str : cardArr) {
+    				total += score(str, i % (scoreArr.length / 5));
+    			}
+    			total += scoreCity(i % (scoreArr.length / 5));
+    			
+    			scoreArr[i] = total;
+    		}
+    	}
+        
+    	return scoreArr;
     }
 
     private static void buildMap() {
@@ -387,7 +403,7 @@ public class Scoring {
         return score;
     }
     
-    private static int scoreCity(){
+    private static int scoreCity(int playerNum){
         int points =0;
         //boolean check = false;
         //playerNum = TurnHandler.get().getCurrentPlayer().getPlayerNum();
@@ -405,6 +421,7 @@ public class Scoring {
         //System.out.println("set size " + set.size());
         return points;
     }
+    
     public static HashMap<String, Boolean> getCardMap() {
         return cardMap;
     }

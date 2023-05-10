@@ -19,6 +19,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 public class GUI {
@@ -51,20 +52,43 @@ public class GUI {
 
 		confirmButton.setOnAction(e -> {
 			if(board.getSettlementsPlacedSinceReset() == board.getSettlementLimit()) {
-
+				TurnHandler turnHandler = TurnHandler.get();
+				Player player = turnHandler.getCurrentPlayer();
+				
 				setConfirmButtonDisable(true);
 				setCancelButtonDisable(true);
 				setNextButtonDisable(false);
 
 				TerrainCard card = board.getActiveCard();
-				if(card.isActive()) {
+				if(card.isActive() && !card.isTempActive()) {
 					card.deactivateCard();
 					terrainButton = (Button)moveSelectionBox.getChildren().get(0);
 					terrainButton.setDisable(true);
-
+					card.setIsUsed(true);
+					
+					ArrayList<ActionTile> tileList = player.getActionTileList();
+					ArrayList<Button> buttonList = player.getButtonList();
+					for(int i = 0; i < tileList.size(); i++) {
+						if(!tileList.get(i).getIsUsed() && !tileList.get(i).getRecentlyTaken()) {
+							buttonList.get(i).setDisable(false);
+						}
+					}
+				} else {
+					player.getCurrentTile().setIsUsed(true);
+					System.out.println(player.getCurrentTile() + " " + player.getCurrentTile().getIsUsed());
+					
+					ArrayList<ActionTile> tileList = player.getActionTileList();
+					ArrayList<Button> buttonList = player.getButtonList();
+					for(int i = 0; i < tileList.size(); i++) {
+						System.out.println(!tileList.get(i).getIsUsed() + " && " + !tileList.get(i).getRecentlyTaken());
+						if(tileList.get(i).getIsUsed() || tileList.get(i).getRecentlyTaken()) {
+							buttonList.get(i).setDisable(true);
+						}
+					}
 				}
 			}
 			board.confirmPlacement();
+			board.resetSettlementsPlaced();
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(true);
 			TurnHandler.get().getCurrentPlayer().setScore(TurnHandler.get().getCurrentPlayer().getTempScore());
 			TurnHandler.get().getCurrentPlayer().updateScore();
@@ -72,6 +96,8 @@ public class GUI {
 			//TurnHandler.get().getCurrentPlayer().actionTileDisabler();
 		});
 		cancelButton = new GameButton("Cancel");
+		cancelButton.setBounds(0, 0, 0, 0);
+		/*
 		cancelButton.setEffect(new DropShadow(10, Color.BLACK));
 		cancelButton.setFont(font);
 		cancelButton.setTextFill(Color.WHITE); 
@@ -81,13 +107,30 @@ public class GUI {
 
 		cancelButton.setOnAction(e -> {
 			GameObject settlementObj = board.getSettlementObj();
-			if(settlementObj != null) {
-				settlementObj.removePreviousImages(board.getSettlementsPlacedSinceReset());
-				board.resetSettlementsPlaced();
+			if(settlementObj == null) {
+				return;
 			}
+			TurnHandler turnHandler = TurnHandler.get();
+			Player player = turnHandler.getCurrentPlayer();
+			
+			if(!board.getActiveCard().getIsUsed()) {
+				player.getAddSettlements().setDisable(false);
+			}
+			
+			ArrayList<ActionTile> tileList = player.getActionTileList();
+			ArrayList<Button> buttonList = player.getButtonList();
+			for(int i = 0; i < tileList.size(); i++) {
+				if(!tileList.get(i).getIsUsed() && !tileList.get(i).getRecentlyTaken()) {
+					buttonList.get(i).setDisable(false);
+				}
+			}
+			
+			settlementObj.removePreviousImages(board.getSettlementsPlacedSinceReset());
+			board.cancelPlacement();
+			board.resetSettlementsPlaced();
 			setConfirmButtonDisable(true);
 			setCancelButtonDisable(true);
-			board.cancelPlacement();
+			
 			TerrainCard card = board.getActiveCard();
 			if(card.isActive()) {
 				card.deactivateCard();
@@ -97,6 +140,7 @@ public class GUI {
 			TurnHandler.get().getCurrentPlayer().updateScore();
 			//Board.get().getActiveCard().reset();
 		});
+		*/
 
 		nextTurnButton = new GameButton("Next turn");
 		nextTurnButton.setEffect(new DropShadow(10, Color.BLACK));
@@ -109,13 +153,39 @@ public class GUI {
 		nextTurnButton.setOnAction(e -> {
 			board.resetSettlementsPlaced();
 			TurnHandler.get().getCurrentPlayer().setTurnConfirmed(false);
+			
 			TurnHandler turnHandler = TurnHandler.get();
+			Player player = turnHandler.getCurrentPlayer();
+			
 			turnHandler.getCurrentPlayer().hideScore();
 			turnHandler.nextTurn();
 			setNextButtonDisable(true);
 			turnHandler.getCurrentPlayer().displayScore();
 			//Board.get().getActiveCard().reset();
-			turnHandler.getCurrentPlayer().activateActionTiles();
+			if(turnHandler.canEndGame() && player.getPlayerNum() == 0) {				
+				Image nullImage = new Image(getClass().getResourceAsStream("/images/NullImage.png"));
+				new GameObject(nullImage, 0, 0, 1920, 1080, 4);
+				
+				openEndGameScreen();
+				
+				GameButton endGameButton = new GameButton("Click to open or close scoring");
+				endGameButton.setEffect(new DropShadow(10, Color.BLACK));
+				
+				Font font2 = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 30);
+				endGameButton.setFont(font2);
+				endGameButton.setTextFill(Color.WHITE);
+				endGameButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(20), new BorderWidths(7))));
+				endGameButton.setBackground(null);
+				endGameButton.setBounds(760, 960, 400, 80);
+				
+				endGameButton.setOnAction(action -> {
+					if(endGameGroup.getChildren().isEmpty()) {
+						openEndGameScreen();
+					} else {
+						closeEndGameScreen();
+					}
+				});
+			}
 		});
 		setNextButtonDisable(true);
 
@@ -144,7 +214,9 @@ public class GUI {
 		objectHandler.add(playerLabel);
 
 		Player player = turnHandler.getCurrentPlayer();
+		
 		terrainButton = new Button();
+		player.setAddSettlements(terrainButton);
 		terrainButton.setEffect(new DropShadow(10, Color.BLACK));
 
 		ImageView settlementImg = new ImageView(player.getSettlementIcon());
@@ -173,25 +245,6 @@ public class GUI {
 		Scoring.scoreCards();
 		updatePlayerStats();
 		player.updateSettlementsRemaining();
-		
-		GameButton endGameButton = new GameButton("X");
-		endGameButton.setEffect(new DropShadow(10, Color.BLACK));
-		
-		font = Font.loadFont(getClass().getResourceAsStream("/MorrisRoman-Black.ttf"), 12);
-		endGameButton.setFont(font);
-		endGameButton.setTextFill(Color.WHITE);
-		endGameButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(20), new BorderWidths(7))));
-		endGameButton.setBackground(null);
-		endGameButton.setBounds(60, 10, 40, 40);
-		
-		/*endGameButton.setOnAction(e -> {
-			if(endGameGroup.getChildren().isEmpty()) {
-				openEndGameScreen();
-			} else {
-				closeEndGameScreen();
-			}
-		});*/
-		//openEndGameScreen();
 	}
 
 	public HBox getMoveSelectionBox() {return moveSelectionBox;}

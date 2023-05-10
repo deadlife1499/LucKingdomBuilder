@@ -25,6 +25,7 @@ public class Player {
     private Image[] settlementImgArr;
     private Image settlementIcon;
     private ArrayList<ActionTile> actionTileList;
+    private ArrayList<Button> actionButtonList;
     private Label scoreLabel;
     private int tempScore;
     private boolean turnConfirmed;
@@ -32,6 +33,9 @@ public class Player {
     private Image firstPlayerToken;
     private static GameObject firstPlayerObj;
     private static Group settlementAmountGroup;
+    private Button addSettlements;
+    private Button currentButton;
+    private ActionTile currentTile;
 
     public Player(int num, String color) {
         score = 0;
@@ -40,6 +44,7 @@ public class Player {
         settlementImgArr = new Image[4];
         settlementIcon = new Image(getClass().getResourceAsStream("/images/" + color + ".png"));
         actionTileList = new ArrayList<>();
+        actionButtonList = new ArrayList<>();
 
         for(int i = 1; i < 5; i++) {
             settlementImgArr[i - 1] = new Image(getClass().getResourceAsStream("/images/" + color + i + ".png"));
@@ -64,12 +69,15 @@ public class Player {
     }
     public int getSettlementNum() {return settlementNum;}
     public int getPlayerNum() {return playerNum;}
-    public ArrayList<ActionTile> getActionTileList() {
-    	return actionTileList;
-    }
+    public ArrayList<ActionTile> getActionTileList() {return actionTileList;}
+    public Button getCurrentButton() {return currentButton;}
+    public ArrayList<Button> getButtonList() {return actionButtonList;}
+    public Button getAddSettlements() {return addSettlements;}
+    public ActionTile getCurrentTile() {return currentTile;}
 
     public void setScore(int score) {this.score = score;}
     public void setTempScore(int score) {this.tempScore = score;}
+    public void setAddSettlements(Button settlementButton) {addSettlements = settlementButton;}
 
     public void displayScore() {
         ObjectHandler objectHandler = ObjectHandler.get();
@@ -105,6 +113,10 @@ public class Player {
     }
 
     public void startTurn() {
+    	for(ActionTile tile : actionTileList) {
+        	tile.setRecentlyTaken(false);
+        }
+    	
         updateGUIButtons();
         displayFirstPlayerToken();
         updateSettlementsRemaining();
@@ -113,7 +125,6 @@ public class Player {
 
     public void addActionTile(ActionTile actionTile) {
         actionTileList.add(actionTile);
-        actionTile.setNew(true);
         updateGUIButtons();
     }
 
@@ -136,7 +147,7 @@ public class Player {
         GUI gui = GUI.get();
         ObservableList<Node> moveSelectionList = gui.getMoveSelectionBox().getChildren();
 
-        Button addSettlements = new Button();
+        addSettlements = new Button();
 
         ImageView settlementImg = new ImageView(settlementIcon);
         settlementImg.setEffect(new DropShadow(10, Color.BLACK));
@@ -155,12 +166,17 @@ public class Player {
             if(!card.isActive()) {
                 card.activateCard();
             }
+            
+            for(Button button : actionButtonList) {
+            	button.setDisable(true);
+            }
         });
         moveSelectionList.add(addSettlements);
     }
 
     public void updateActionTiles() {
         Iterator<ActionTile> iter = actionTileList.iterator();
+        actionButtonList.clear();
 
         while(iter.hasNext()) {
             ActionTile tile = iter.next();
@@ -168,6 +184,7 @@ public class Player {
             ObservableList<Node> moveSelectionList = gui.getMoveSelectionBox().getChildren();
 
             Button addActionTiles = new Button();
+            actionButtonList.add(addActionTiles);
 
             ActionTileTemplate tileObj = tile.getTileObj();
             ImageView tileImg = new ImageView(tileObj.getLocationImage());
@@ -177,14 +194,22 @@ public class Player {
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
             addActionTiles.setOnAction(e -> {
-                    //if (!turnConfirmed)
-                if ((Board.get().getSettlementsPlacedSinceReset()==0 || Board.get().getSettlementsPlacedSinceReset()==Board.get().getSettlementLimit()) && (!tile.getNew())){
-                    gui.setCancelButtonDisable(true);
-                    usedActionTile = true;
-                    tileObj.setActive(true);
+            	currentTile = tile;
+            	System.out.println(tile);
+            	currentButton = addActionTiles;
+                gui.setCancelButtonDisable(true);
+                usedActionTile = true;
+                tileObj.setActive(true);
+                
+                addSettlements.setDisable(true);
+                for(int i = 0; i < actionTileList.size(); i++) {
+                	if(tile != actionTileList.get(i)) {
+                		actionButtonList.get(i).setDisable(true);
+                	}
                 }
-                });
+            });
             moveSelectionList.add(addActionTiles);
+            addActionTiles.setDisable(tile.getRecentlyTaken());
         }
     }
     
@@ -234,11 +259,6 @@ public class Player {
     }
     public boolean isUsedActionTile(){
         return usedActionTile;
-    }
-    public void activateActionTiles(){
-        for(int i =0; i<actionTileList.size();i++){
-            actionTileList.get(i).setNew(false);
-        }
     }
     public void setSettlementNum(int n){
         settlementNum = n;

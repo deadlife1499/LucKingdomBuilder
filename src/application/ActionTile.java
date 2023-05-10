@@ -12,7 +12,8 @@ public class ActionTile {
     private int row, col;
     private double x, y, width, height;
     private HashSet<Player> playerSet;
-    private boolean isNew;
+    private boolean recentlyTaken;
+    private boolean isUsed;
 
     public ActionTile(HexButton hexButton, int row, int col, double x, double y, double width, double height, String type) {
         this.row = row;
@@ -25,12 +26,18 @@ public class ActionTile {
         if(tileObj == null) {
             new City();
         }
+        recentlyTaken = true;
+        isUsed = false;
 
         playerSet = new HashSet<>();
-        isNew = false;
     }
 
     public ActionTileTemplate getTileObj() {return tileObj;}
+    public boolean getRecentlyTaken() {return recentlyTaken;}
+    public boolean getIsUsed() {return isUsed;}
+    
+    public void setRecentlyTaken(boolean taken) {recentlyTaken = taken;}
+    public void setIsUsed(boolean used) {isUsed = used;}
 
     public boolean takeToken() {
         TurnHandler turnHandler = TurnHandler.get();
@@ -48,6 +55,7 @@ public class ActionTile {
     public void returnToken() {
         TurnHandler turnHandler = TurnHandler.get();
         Player player = turnHandler.getCurrentPlayer();
+        
         if (tileObj!=null){
             tileObj.replaceTile(2 - playerSet.size());
             playerSet.remove(player);
@@ -117,17 +125,17 @@ public class ActionTile {
 
         public Image getLocationImage() {return locationImage;}
 
-        private void replaceTile(int x) {
+        private void replaceTile(int num) {
             double tileWidth = (width - 31 * (width / 1152)) / 19;
             double tileHeight = height / 19;
 
-            switch(x) {
+            switch(num) {
                 case 0:
-                    actionTileObj.add(tileImage, x + tileWidth * col + col / 10 * (1.5 * (width / 1152)) + row % 2 * (29.5 * (width / 1152)) - 27 + 383, y + row * tileHeight - 34.6, 56, 67.2);
+                    actionTileObj.add(tileImage, x + tileWidth * col + col / 10 * (1.5 * (width / 1152)) + row % 2 * (29.5 * (width / 1152)) - 27, y + row * tileHeight - 34.6, 56, 67.2);
 
                     break;
                 case 1:
-                    actionTileObj.add(tileImage, x + tileWidth * col + col / 10 * (1.5 * (width / 1152)) + row % 2 * (29.5 * (width / 1152)) - 24 + 383, y + row * tileHeight - 31, 50, 60);
+                    actionTileObj.add(tileImage, x + tileWidth * col + col / 10 * (1.5 * (width / 1152)) + row % 2 * (29.5 * (width / 1152)) - 24, y + row * tileHeight - 31, 50, 60);
 
                     break;
             }
@@ -241,10 +249,6 @@ public class ActionTile {
         private void activate() {
             Board.get().setPlayerSettlementsActive("harbor");
         }
-        public void repop(){
-            Board.get().allowAdditionalSettlement();
-            Board.get().getActiveCard().tempActivateCard("w");
-        }
 
         private void deactivate() {
 
@@ -343,11 +347,5 @@ public class ActionTile {
 
             new GameObject(locationImage, x + tileWidth * col + col / 10 * (1.5 * (width / 1152)) + row % 2 * (29.5 * (width / 1152)) - 27, y + row * tileHeight - 34.6, 56, 67.2, 2);
         }
-    }
-    public void setNew(boolean is){
-        isNew = is;
-    }
-    public boolean getNew(){
-        return isNew;
     }
 }

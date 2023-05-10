@@ -41,18 +41,24 @@ public class TurnHandler {
 
 		return playerIter.previous();
 	}
-	public ArrayList<Player> getPlayerList() {
-		return playerList;
-	}
+	public ArrayList<Player> getPlayerList() {return playerList;}
 
 	public void setPlayers(String[] colors) {
 		for(int i = 0; i < colors.length; i++) {
 			Player player = new Player(i, colors[i]);
 			playerList.add(player);
 		}
-		Collections.shuffle(playerList);
 		playerIter = playerList.listIterator();
 		playerList.get(0).setFirstPlayer();
+	}
+	
+	public boolean canEndGame() {
+		for(Player player : playerList) {
+			if(player.getSettlementNum() == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static TurnHandler get() {

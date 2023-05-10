@@ -26,7 +26,8 @@ public class ColorSelection {
 
 	public ColorSelection(int playerAmount) {
 		//setStyle("-fx-background-color: " + Color.COLOR.getValue());
-		AnimationClass.FadeScreenIn(new GameObject(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/KB-ColorSelectionScreen.png"))), 0, 0, 1920, 1080, 0));
+		Image backgroundImage = new Image(getClass().getResourceAsStream("/images/KB-ColorSelectionScreen.png"));
+		new GameObject(backgroundImage, 0, 0, 1920, 1080, 0);
 		selectionObjects = new HashSet<>();
 		playerColors = new String[playerAmount];
 		for(int i = 0; i < playerAmount; i++) {
@@ -74,19 +75,21 @@ public class ColorSelection {
 					}
 				}
 			}
-			ObjectHandler objectHandler = ObjectHandler.get();
-			objectHandler.clear();
+			
+			AnimationClass.FadeScreenIn(action -> {
+				ObjectHandler objectHandler = ObjectHandler.get();
+				objectHandler.clear();
 
-			TurnHandler turnHandler = TurnHandler.get();
-			turnHandler.setPlayers(playerColors);
-
-			Board.get();
-			GUI.get();
+				TurnHandler turnHandler = TurnHandler.get();
+				turnHandler.setPlayers(playerColors);
+				
+				Board.get();
+				GUI.get();
+				
+				AnimationClass.FadeScreenOut();
+			});
 		});
-		for (GameButton x : mainButtons){
-			AnimationClass.FadeScreenIn(x);
-		}
-		AnimationClass.FadeScreenIn(nextButton);
+		AnimationClass.FadeScreenOut();
 	}
 
 	private void openColorSelection(GameButton button, double xOffset, double yOffset) {
@@ -96,7 +99,7 @@ public class ColorSelection {
 		selectionBackground.setBounds(25 + 200, 45 + 75, 810, 810);
 		selectionBackground.setStyle("-fx-background-color: " + "#" + Color.BLACK.toString().substring(2));
 		selectionObjects.add(selectionBackground);
-		//AnimationClass.FadeScreenIn(selectionBackground);
+		
 		for(int i = 0; i < 8; i++) {
 			GameButton colorButton = new GameButton();
 			//colorButton.setBounds(xOffset - 55 + 105 * (i % 3), yOffset + 5 + 105 * (i / 3), 100, 100);
@@ -127,9 +130,11 @@ public class ColorSelection {
 						return;
 					}
 				}
-
+				
 				for(String color : playerColors) {
-					return;
+					if(color == "") {
+						return;
+					}
 				}
 				nextButton.setText("Next");
 			});
