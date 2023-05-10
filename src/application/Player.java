@@ -36,6 +36,7 @@ public class Player {
     private Button addSettlements;
     private Button currentButton;
     private ActionTile currentTile;
+    private boolean addSettlementsIsUsed;
 
     public Player(int num, String color) {
         score = 0;
@@ -58,6 +59,7 @@ public class Player {
             firstPlayerObj = new GameObject(firstPlayerToken, 215, 10, 50, 57.67, 2);
             firstPlayerObj.setEffect(new DropShadow(10, Color.BLACK));
         }
+        addSettlementsIsUsed=false;
     }
 
     public Image getSettlementIcon() {return settlementIcon;}
@@ -115,12 +117,14 @@ public class Player {
     public void startTurn() {
     	for(ActionTile tile : actionTileList) {
         	tile.setRecentlyTaken(false);
+            tile.setIsUsed(false);
         }
     	
         updateGUIButtons();
         displayFirstPlayerToken();
         updateSettlementsRemaining();
         turnConfirmed = false;
+        addSettlementsIsUsed=false;
     }
 
     public void addActionTile(ActionTile actionTile) {
@@ -133,7 +137,7 @@ public class Player {
         updateGUIButtons();
     }
 
-    private void updateGUIButtons() {
+    public void updateGUIButtons() {
         GUI gui = GUI.get();
         ObservableList<Node> moveSelectionList = gui.getMoveSelectionBox().getChildren();
 
@@ -143,7 +147,7 @@ public class Player {
         updateActionTiles();
     }
 
-    private void updateTerrainCard() {
+    public void updateTerrainCard() {
         GUI gui = GUI.get();
         ObservableList<Node> moveSelectionList = gui.getMoveSelectionBox().getChildren();
 
@@ -170,6 +174,7 @@ public class Player {
             for(Button button : actionButtonList) {
             	button.setDisable(true);
             }
+            addSettlementsIsUsed=true;
         });
         moveSelectionList.add(addSettlements);
     }
@@ -194,6 +199,7 @@ public class Player {
             addActionTiles.setPrefSize(tileImg.getFitWidth(), tileImg.getFitHeight());
             addActionTiles.setGraphic(tileImg);
             addActionTiles.setOnAction(e -> {
+                tile.setIsUsed(true);
             	currentTile = tile;
             	System.out.println(tile);
             	currentButton = addActionTiles;
@@ -206,6 +212,8 @@ public class Player {
                 	if(tile != actionTileList.get(i)) {
                 		actionButtonList.get(i).setDisable(true);
                 	}
+                    if (tile.getIsUsed())
+                        addActionTiles.setDisable(true);
                 }
             });
             moveSelectionList.add(addActionTiles);
@@ -262,6 +270,9 @@ public class Player {
     }
     public void setSettlementNum(int n){
         settlementNum = n;
+    }
+    public boolean getAddSettlementsIsUsed(){
+        return addSettlementsIsUsed;
     }
 }
 

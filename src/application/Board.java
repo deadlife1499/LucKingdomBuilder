@@ -216,6 +216,7 @@ public class Board {
 				if(player.getSettlementNum() == 0) {
 					gui.setNextButtonDisable(false);
 				}
+				hexMatrix[0][0].toPlayerString();
 			} else if(!AnimationClass.getActive()){
 				//System.out.println(tavern);
 				if(tavern){
@@ -263,6 +264,7 @@ public class Board {
 				playerMaps.get(TurnHandler.get().getCurrentPlayer().getPlayerNum()).put(hexNode.getSector(), entry);
 				Scoring.scoreCards();
 				TurnHandler.get().getCurrentPlayer().updateSettlementsRemaining();
+				hexMatrix[0][0].toPlayerString();
 			}
 			//System.out.println(hexMatrix[0][0].toPlayerString());
 		});
@@ -400,7 +402,14 @@ public class Board {
 	}
 	private void Barn(){
 		settlementLimit++;
-		Board.get().getActiveCard().activateCard();
+		getActiveCard().deactivateCard();
+		activeCard.tempActivateCard(activeCard.getToken());
+	}
+	public void disableActionTileVariables(){
+		barn = false;
+		tavern = false;
+		tavernDone = false;
+		harbor = false;
 	}
 }
 

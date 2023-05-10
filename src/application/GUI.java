@@ -64,6 +64,7 @@ public class GUI {
 					card.deactivateCard();
 					terrainButton = (Button)moveSelectionBox.getChildren().get(0);
 					terrainButton.setDisable(true);
+					//System.out.println("settlement button disabled");
 					card.setIsUsed(true);
 					
 					ArrayList<ActionTile> tileList = player.getActionTileList();
@@ -79,12 +80,25 @@ public class GUI {
 					
 					ArrayList<ActionTile> tileList = player.getActionTileList();
 					ArrayList<Button> buttonList = player.getButtonList();
+					//ArrayList<Integer> toDisable = new ArrayList<>();
+					if(!player.getAddSettlementsIsUsed()){
+						board.getActiveCard().tempDeactivateCard();
+						board.getActiveCard().deactivateCard();
+						player.getAddSettlements().setDisable(false);
+						player.updateGUIButtons();
+					}
 					for(int i = 0; i < tileList.size(); i++) {
 						System.out.println(!tileList.get(i).getIsUsed() + " && " + !tileList.get(i).getRecentlyTaken());
 						if(tileList.get(i).getIsUsed() || tileList.get(i).getRecentlyTaken()) {
 							buttonList.get(i).setDisable(true);
 						}
 					}
+					//System.out.println("shuold have reenabled");
+					//terrainButton = (Button)moveSelectionBox.getChildren().get(0);
+					//terrainButton.setDisable(false);
+
+					//player.getAddSettlements().setDisable(false);
+					//player.updateTerrainCard();
 				}
 			}
 			board.confirmPlacement();
@@ -186,6 +200,7 @@ public class GUI {
 					}
 				});
 			}
+			board.disableActionTileVariables();
 		});
 		setNextButtonDisable(true);
 
@@ -233,7 +248,7 @@ public class GUI {
 			TerrainCard card = board.getActiveCard();
 			card.reset();
 			card.tempDeactivateCard();
-			
+			//card.barnDeactivateCard();
 			if(!card.isActive()) {
 				card.activateCard();
 			}

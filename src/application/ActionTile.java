@@ -279,7 +279,7 @@ public class ActionTile {
 
         private void activate() {
             Board.get().allowAdditionalSettlement();
-            Board.get().getActiveCard().activateCard();
+            Board.get().getActiveCard().tempActivateCard(Board.get().getActiveCard().getToken());
             //System.out.println(Board.get().getSettlementLimit());
         }
 
